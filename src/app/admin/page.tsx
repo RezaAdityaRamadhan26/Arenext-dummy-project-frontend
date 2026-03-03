@@ -1,5 +1,7 @@
+'use client'
+
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/src/store/authStore";
 import { LogOut, LayoutDashboard, Map } from "lucide-react";
 
@@ -7,7 +9,8 @@ export default function AdminDashboard () {
   const router = useRouter();
   const { user, token, logout } = useAuthStore();
   const [isChecking, setIsChecking] = useState(true);
-
+  
+  // login (checking)
   useEffect(() => {
     if (!token) {
       router.push("/login");
@@ -24,15 +27,29 @@ export default function AdminDashboard () {
   if (isChecking)  {
     return <div className="flex min-h-screen items-center justify-center bg-gray-50 text-gray-500">Memeriksa akses...</div>;
   }
-};
+
+  // (venues)
+  const [venues, setVenues] = useState([]);
+  const [isLoadingVenues, setIsLoadingVenues] = useState(true);
+
+  useEffect(() => {
+    const fetchVenues = async() => {
+        const response = await api.get('/venues');
+
+        
+    }
+  }
+
+)
+
+
 
 return (
   <div className="min-h-screen bg-gray-50">
-    {/* Navbar Atas */}
+    {/* Navbar */}
     <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo / Judul Kiri */}
           <div className="flex items-center gap-2">
             <div className="bg-blue-600 p-2 rounded-lg">
               <LayoutDashboard className="h-5 w-5 text-white" />
@@ -42,7 +59,7 @@ return (
             </span>
           </div>
 
-          {/* Menu Kanan (Profil & Logout) */}
+          {/* sidebar*/}
           <div className="flex items-center gap-4">
             <div className="hidden sm:block text-right">
               <p className="text-sm font-medium text-gray-900">Halo, Admin!</p>
@@ -61,9 +78,8 @@ return (
       </div>
     </nav>
 
-    {/* Konten Utama */}
+    {/* main */}
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      {/* Kartu Ucapan Selamat Datang */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center sm:text-left flex flex-col sm:flex-row items-center gap-6">
         <div className="bg-blue-50 p-4 rounded-full">
           <Map className="h-10 w-10 text-blue-600" />
@@ -79,7 +95,7 @@ return (
         </div>
       </div>
 
-      {/* Area Kosong untuk Daftar Lapangan Nanti */}
+      {/* for booking */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-bold text-gray-900">Daftar Lapangan</h2>
@@ -96,4 +112,5 @@ return (
       </div>
     </main>
   </div>
-);
+)
+};
