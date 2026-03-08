@@ -211,6 +211,9 @@ export default function AdminDashboard() {
 
                     <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end gap-2">
                       <button
+                        onClick={() =>
+                          router.push(`/admin/venues/edit/${venue.id}`)
+                        }
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         title="Edit Lapangan"
                       >
