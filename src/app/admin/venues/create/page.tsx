@@ -3,9 +3,12 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Save, Image as ImageIcon } from "lucide-react";
+import api from '../../../../lib/axios'
+import { useAuthStore } from "@/src/store/authStore";
 
 export default function CreateVenuePage() {
     const router = useRouter();
+    const { token }= useAuthStore();
 
     const [name, setName] = useState('');
     const [pricePerHour, setPricePerHour] = useState('');
@@ -23,15 +26,45 @@ export default function CreateVenuePage() {
     };
 
     const handleSubmit = async (e: any) => {
+        console.log("isi token saya", token);
+        
         e.preventDefault();
-        alert('Tombol simpan ditekan!')
+
+        if (!image) {
+            alert('Kamu belum memilih foto untuk venue!')
+            return;
+        }
+        
+        try {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('pricePerHour', pricePerHour);
+            formData.append('description', description);
+            formData.append('image', image);
+
+            await api.post("/venues", formData, { 
+                headers: {
+                    Authorization: `Bearer ${token}`
+                } 
+            });
+
+            alert('Hore! venue berhasil ditambahkan!');
+            router.push('/admin');
+
+        } catch (error: any) {
+            console.error('gagal menambahkan venue', error.response?.data);
+            const pesanError =
+              error.response?.data?.message ||
+              "Silakan cek Console Inspect Element";
+            alert(`Gagal menyimpan! Kata Backend: ${pesanError}`);
+        }
     };
 
     
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Tombol Kembali */}
+          {/* back button */}
           <button
             onClick={() => router.back()}
             className="flex items-center gap-2 text-gray-500 hover:text-blue-600 mb-6 transition-colors"
@@ -40,7 +73,7 @@ export default function CreateVenuePage() {
             <span>Kembali ke Dashboard</span>
           </button>
 
-          {/* Kotak Putih Formulir */}
+          {/* form */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-6 border-b border-gray-100 bg-white">
               <h1 className="text-2xl font-bold text-gray-900">
@@ -52,10 +85,10 @@ export default function CreateVenuePage() {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
-              {/* Input Nama Lapangan */}
+              {/* nama venue */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nama Lapangan
+                  Nama Venue
                 </label>
                 <input
                   type="text"
@@ -90,7 +123,7 @@ export default function CreateVenuePage() {
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Ceritakan fasilitas lapangan ini (misal: gratis bola, ada tribun, dll)"
+                  placeholder="Ceritakan fasilitas lapanga  n ini (misal: gratis bola, ada tribun, dll)"
                   rows={4}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                   required
@@ -132,7 +165,7 @@ export default function CreateVenuePage() {
                       </label>
                     </div>
                     <p className="text-xs leading-5 text-gray-500">
-                      PNG, JPG, JPEG up to 5MB
+                      PNG, JPG, JPEG up to 4MB
                     </p>
                   </div>
                 </div>

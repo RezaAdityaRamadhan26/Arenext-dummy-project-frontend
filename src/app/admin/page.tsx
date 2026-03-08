@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/src/store/authStore";
-import { LogOut, LayoutDashboard, Map, Loader2 } from "lucide-react";
+import { LogOut, LayoutDashboard, Map, Loader2, Trash, Edit } from "lucide-react";
 import api from "@/src/lib/axios";
 import Link from "next/link";
 
@@ -13,9 +13,25 @@ export default function AdminDashboard() {
 
   const [isChecking, setIsChecking] = useState(true);
   const [isLoadingVenues, setIsLoadingVenues] = useState(true);
-  const [venues, setVenues] = useState([]);
+  const [venues, setVenues] = useState([]); 
 
   useEffect(() => {
+    // ketika di reload, session akan tetap ada (tidak ter log out)
+    if (typeof window !== "undefined") {
+      const raw = localStorage.getItem("arenext-auth");
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          const storedToken = parsed?.state?.token ?? null;
+          if (storedToken) {
+            setIsChecking(false);
+            return;
+          }
+        } catch (e) {
+        }
+      }
+    }
+
     if (!token) {
       router.push("/login");
     } else {
@@ -44,8 +60,30 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     logout();
     router.push("/login");
-  };
+  }
 
+    const handleDeleteVenue = async (id: number, name: string) => {
+      const confirmDelete = window.confirm('apakah anda yakin ingin menghapus venue?')
+
+      if (!confirmDelete) return;
+
+      try {
+        await api.delete(`/venues/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        alert('lapangan berhasil dihapus')
+
+        setVenues(venues.filter((v: any) => v.id !== id));
+
+      } catch (error: any) {
+        console.error("Detail Error Hapus:", error.response?.data || error);
+        const pesanError = error.response?.data?.message;
+        alert(`gagal menghapus error : ${pesanError}`)
+      }
+  };
 
   if (isChecking) {
     return (
@@ -114,7 +152,10 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-gray-900">Daftar Lapangan</h2>
-            <Link href='/admin/venues/create'className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <Link
+              href="/admin/venues/create"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            >
               + Tambah Lapangan
             </Link>
           </div>
@@ -158,13 +199,31 @@ export default function AdminDashboard() {
                       }}
                     />
                   </div>
-                  <div className="mt-4">
-                    <h3 className="font-semibold text-gray-900">
-                      {venue.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                      {venue.description}
-                    </p>
+                  <div className="mt-4 grow flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-semibold text-gray-900">
+                        {venue.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                        {venue.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end gap-2">
+                      <button
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Edit Lapangan"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteVenue(venue.id, venue.name)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Hapus Lapangan"
+                      >
+                        <Trash className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
