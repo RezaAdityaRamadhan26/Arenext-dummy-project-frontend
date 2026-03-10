@@ -38,20 +38,27 @@ export default function LoginPage() {
       response = await api.post("/auth/login", data);
 
       const token = response.data.token;
-      const user = response.data.user;
+      const user = response.data.dataUser;
 
+      login(user, token)
       toast.success("login berhasil!", {
         description: "selamat datang kembali di Arenext!",
       });
 
-      router.push("/admin");
-
-      login(user, token);
-    } catch (error) {
-      toast.error("login gagal", {
+      if (user.role === "ADMIN") {
+        router.push('/admin')
+      } else {
+        router.push('/venues')
+      }
+      
+    } catch (error: any) {
+      console.error("CCTV 4: TERJADI ERROR ->", error); // Ini akan membongkar masalah aslinya
+      
+      toast.error("Login gagal", {
         description:
-          response?.data.message || "pastikan email dan password benar",
+          error?.response?.data?.message || error.message || "Pastikan email dan password benar",
       });
+
     } finally {
       setIsLoading(false);
     }
