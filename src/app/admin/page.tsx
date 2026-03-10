@@ -124,7 +124,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* sidebar */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-medium text-white">Halo, Admin!</p>
                 <p className="text-xs text-slate-400">{user?.email}</p>
@@ -132,10 +132,10 @@ export default function AdminDashboard() {
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-300 bg-red-500/10 border border-red-400/20 hover:bg-red-500/20 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-red-300 bg-red-500/10 border border-red-400/20 hover:bg-red-500/20 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 <LogOut className="h-4 w-4" />
-                Keluar
+                <span className="hidden sm:inline">Keluar</span>
               </button>
             </div>
           </div>
@@ -164,16 +164,16 @@ export default function AdminDashboard() {
         <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 animate-[fadeIn_0.6s_ease-out_0.1s_forwards] opacity-0">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <h2 className="text-lg font-bold text-white">Daftar Lapangan</h2>
-            <div className="flex gap-3">
+            <div className="flex w-full sm:w-auto gap-2 sm:gap-3">
               <Link
                 href="/admin/bookings"
-                className="rounded-xl border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-slate-300 hover:bg-white/15 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
+                className="flex-1 sm:flex-initial text-center rounded-xl border border-white/15 bg-white/10 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-slate-300 hover:bg-white/15 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 Kelola Pesanan
               </Link>
               <Link
                 href="/admin/venues/create"
-                className="rounded-xl bg-linear-to-r from-blue-600 to-indigo-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105 active:scale-95"
+                className="flex-1 sm:flex-initial text-center rounded-xl bg-linear-to-r from-blue-600 to-indigo-500 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 + Tambah Lapangan
               </Link>
@@ -194,7 +194,7 @@ export default function AdminDashboard() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {venues.map((venue: any, index: number) => (
                 <div
                   key={venue.id}
@@ -206,7 +206,7 @@ export default function AdminDashboard() {
                     <img
                       src={
                         venue.image
-                          ? `http://localhost:3000${venue.image}`
+                          ? `${process.env.NEXT_PUBLIC_API_URL}${venue.image}`
                           : "https://placehold.co/600x400?text=Tanpa+Foto"
                       }
                       alt={venue.name}

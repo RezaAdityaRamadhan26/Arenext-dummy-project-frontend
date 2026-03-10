@@ -41,10 +41,10 @@ export default function Home() {
               tanpa antre.
             </p>
 
-            <div className="flex justify-center gap-4 opacity-0 animate-[fadeIn_0.7s_ease-out_0.5s_forwards]">
+            <div className="flex justify-center gap-4 opacity-0 animate-[fadeIn_0.7s_ease-out_0.5s_forwards] px-4 sm:px-0">
               <Link
                 href="/venues"
-                className="group flex items-center gap-2 bg-linear-to-r from-blue-600 to-indigo-500 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105 active:scale-95"
+                className="group flex items-center justify-center gap-2 bg-linear-to-r from-blue-600 to-indigo-500 text-white w-full sm:w-auto px-8 py-4 rounded-2xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 Lihat Lapangan
                 <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
@@ -65,7 +65,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
               {/* Card 1 */}
               <div className="group rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/30 hover:bg-white/10 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1 opacity-0 animate-[slideUp_0.6s_ease-out_0.15s_forwards]">
                 <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-500 shadow-lg shadow-blue-500/25 transition-transform duration-300 group-hover:scale-110">

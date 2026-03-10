@@ -48,7 +48,7 @@ export default function EditVenuePage() {
         `/venues/${params.id}`,
         {
           name: name,
-          pricePerHour: pricePerHour,
+          pricePerHour: Number(pricePerHour),
           description: description,
         },
         {

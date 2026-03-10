@@ -36,7 +36,7 @@ export default function PublicVenuesPage() {
             <Search className="h-4 w-4" />
             Temukan Lapanganmu
           </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight">
             Pilih Lapangan{" "}
             <span className="bg-linear-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
               Favoritmu
@@ -64,7 +64,7 @@ export default function PublicVenuesPage() {
           </div>
         ) : (
           /* Venue Cards */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {venues.map((venue: any, index: number) => (
               <div
                 key={venue.id}
@@ -76,7 +76,7 @@ export default function PublicVenuesPage() {
                   <img
                     src={
                       venue.image
-                        ? `http://localhost:3000${venue.image}`
+                        ? `${process.env.NEXT_PUBLIC_API_URL}${venue.image}`
                         : "https://placehold.co/600x400?text=Tanpa+Foto"
                     }
                     alt={venue.name}

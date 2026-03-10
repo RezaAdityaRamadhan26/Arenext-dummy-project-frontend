@@ -90,11 +90,11 @@ export default function VenueDetailPage() {
         <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden flex flex-col lg:flex-row shadow-2xl shadow-blue-500/5 animate-[fadeIn_0.5s_ease-out_forwards] opacity-0">
           {/* KIRI: Informasi Lapangan */}
           <div className="lg:w-7/12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col">
-            <div className="relative h-80 lg:h-96 w-full overflow-hidden bg-slate-800">
+            <div className="relative h-56 sm:h-80 lg:h-96 w-full overflow-hidden bg-slate-800">
               <img
                 src={
                   venue.image
-                    ? `http://localhost:3000${venue.image}`
+                    ? `${process.env.NEXT_PUBLIC_API_URL}${venue.image}`
                     : "https://placehold.co/800x600?text=Tanpa+Foto"
                 }
                 alt={venue.name}
@@ -106,8 +106,8 @@ export default function VenueDetailPage() {
               />
               <div className="absolute inset-0 bg-linear-to-t from-slate-950/70 via-transparent to-transparent" />
             </div>
-            <div className="p-8">
-              <h1 className="text-3xl font-extrabold text-white mb-2">
+            <div className="p-5 sm:p-8">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
                 {venue.name}
               </h1>
               <p className="text-2xl font-bold bg-linear-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent mb-6">
@@ -126,8 +126,8 @@ export default function VenueDetailPage() {
           </div>
 
           {/* KANAN: Form Booking */}
-          <div className="lg:w-5/12 p-8 bg-white/5">
-            <h2 className="text-2xl font-bold text-white mb-6">
+          <div className="lg:w-5/12 p-5 sm:p-8 bg-white/5">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-6">
               Pesan Lapangan Ini
             </h2>
 

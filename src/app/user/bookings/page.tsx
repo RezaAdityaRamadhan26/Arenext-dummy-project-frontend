@@ -48,7 +48,7 @@ export default function MyBookingsPage() {
       <PublicNavbar />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 animate-[fadeIn_0.5s_ease-out_forwards] opacity-0">
-          <h1 className="text-3xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
             Riwayat Pesanan Saya
           </h1>
           <p className="text-slate-400 mt-2 text-lg">
@@ -98,7 +98,7 @@ export default function MyBookingsPage() {
                     </span>
                   </div>
 
-                  <h2 className="text-2xl font-bold text-white">
+                  <h2 className="text-lg sm:text-2xl font-bold text-white">
                     {booking.venue ? booking.venue.name : "Lapangan Dihapus"}
                   </h2>
 
@@ -124,7 +124,7 @@ export default function MyBookingsPage() {
                   <p className="text-sm text-slate-500 font-medium mb-1">
                     Total Pembayaran
                   </p>
-                  <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-indigo-400">
+                  <p className="text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-indigo-400">
                     Rp {booking.totalPrice.toLocaleString("id-ID")}
                   </p>
                 </div>
