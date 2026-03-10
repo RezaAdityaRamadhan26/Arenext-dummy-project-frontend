@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import { XCircle, CheckCircle, Clock, Loader2 } from "lucide-react";
@@ -6,75 +6,81 @@ import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/store/authStore";
 
 export default function AdminBookingPage() {
-    const [bookings, setBookings] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const { token } = useAuthStore();
+  const [bookings, setBookings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { token } = useAuthStore();
 
-    const fetchBookings = async () => {
-        try {
-            const response = await api.get('/booking', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setBookings(response.data.data);
-        } catch (error) {
-            console.error('gagal menampilkan data');
-
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-
-    useEffect(() => {
-        fetchBookings();
-    }, [token]);
-
-    const handleUpdateStatus = async (id: number, newStatus: string) => {
-        const confirmAction = window.confirm(`apakah kamu yakin ingin mengubah ${newStatus}`);
-        if(!confirmAction) return;
-
-        try {
-            await api.post(`/booking/${id}/status`,
-                {status: newStatus},
-                {headers: {
-                    Authorization: `Bearer ${token}`
-                }}
-            )
-            
-            alert(`berhasil diubah menjadi ${newStatus}`)
-            fetchBookings();
-        } catch (error: any) {
-            console.error("gagal update status", error);
-            alert('waduh, gagal mengubah status')
-        }
+  const fetchBookings = async () => {
+    try {
+      const response = await api.get("/booking", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setBookings(response.data.data);
+    } catch (error) {
+      console.error("gagal menampilkan data");
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    if(isLoading) {
-        return (
-            <div className="flex min-h-[70vh] items-center justify-center text-slate-500">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-600 mr-2" />
-                Memuat daftar pesanan...
-            </div>
-        )
+  useEffect(() => {
+    fetchBookings();
+  }, [token]);
+
+  const handleUpdateStatus = async (id: number, newStatus: string) => {
+    const confirmAction = window.confirm(
+      `apakah kamu yakin ingin mengubah ${newStatus}`,
+    );
+    if (!confirmAction) return;
+
+    try {
+      await api.post(
+        `/booking/${id}/status`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      alert(`berhasil diubah menjadi ${newStatus}`);
+      fetchBookings();
+    } catch (error: any) {
+      console.error("gagal update status", error);
+      alert("waduh, gagal mengubah status");
     }
+  };
 
+  if (isLoading) {
     return (
-      <div className="p-6">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">
+      <div className="flex min-h-[70vh] items-center justify-center bg-slate-950">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-400 mr-3" />
+        <span className="text-slate-400 font-medium">
+          Memuat daftar pesanan...
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-white p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8 animate-[fadeIn_0.5s_ease-out_forwards] opacity-0">
+          <h1 className="text-2xl font-extrabold text-white">
             Manajemen Pesanan
           </h1>
-          <p className="text-slate-500 mt-1">
+          <p className="text-slate-400 mt-1">
             Kelola semua pesanan lapangan yang masuk dari pelanggan.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden shadow-2xl shadow-blue-500/5 animate-[slideUp_0.5s_ease-out_0.1s_forwards] opacity-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-slate-700 border-b border-slate-200">
+            <table className="w-full text-left text-sm text-slate-300">
+              <thead className="bg-white/5 text-slate-200 border-b border-white/10">
                 <tr>
                   <th className="px-6 py-4 font-bold">ID</th>
                   <th className="px-6 py-4 font-bold">Nama Pemesan</th>
@@ -87,12 +93,12 @@ export default function AdminBookingPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/5">
                 {bookings.length === 0 ? (
                   <tr>
                     <td
                       colSpan={7}
-                      className="px-6 py-8 text-center text-slate-500"
+                      className="px-6 py-12 text-center text-slate-500"
                     >
                       Belum ada pesanan yang masuk.
                     </td>
@@ -101,27 +107,27 @@ export default function AdminBookingPage() {
                   bookings.map((booking: any) => (
                     <tr
                       key={booking.id}
-                      className="hover:bg-slate-50/50 transition-colors"
+                      className="hover:bg-white/5 transition-colors duration-200"
                     >
-                      <td className="px-6 py-4 font-medium text-slate-900">
+                      <td className="px-6 py-4 font-bold text-blue-300">
                         #{booking.id}
                       </td>
 
                       {/* Mengambil nama dari tabel User (berkat include user di Backend) */}
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 text-slate-200">
                         {booking.user
                           ? booking.user.name
                           : "User Tidak Ditemukan"}
                       </td>
 
                       {/* Mengambil nama dari tabel Venue */}
-                      <td className="px-6 py-4 font-medium text-blue-600">
+                      <td className="px-6 py-4 font-bold text-indigo-300">
                         {booking.venue ? booking.venue.name : "Venue Dihapus"}
                       </td>
 
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5 text-slate-900 font-medium">
-                          <Clock className="h-4 w-4 text-slate-400" />
+                        <div className="flex items-center gap-1.5 text-slate-200 font-medium">
+                          <Clock className="h-4 w-4 text-slate-500" />
                           {new Date(booking.date).toLocaleDateString("id-ID")}
                         </div>
                         <div className="text-xs text-slate-500 mt-0.5">
@@ -129,7 +135,7 @@ export default function AdminBookingPage() {
                         </div>
                       </td>
 
-                      <td className="px-6 py-4 font-bold text-slate-900">
+                      <td className="px-6 py-4 font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-indigo-400">
                         Rp {booking.totalPrice.toLocaleString("id-ID")}
                       </td>
 
@@ -137,13 +143,13 @@ export default function AdminBookingPage() {
                         {/* Label Status Bawaan */}
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1
-                        ${
-                          booking.status === "CONFIRMED"
-                            ? "bg-green-100 text-green-700"
-                            : booking.status === "REJECTED"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-yellow-100 text-yellow-700"
-                        }`} // Default kuning (Menunggu)
+                          ${
+                            booking.status === "CONFIRMED"
+                              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                              : booking.status === "REJECTED"
+                                ? "bg-red-500/15 text-red-400 border border-red-500/30"
+                                : "bg-yellow-500/15 text-yellow-400 border border-yellow-500/30"
+                          }`} // Default kuning (Menunggu)
                         >
                           {booking.status || "Menunggu"}
                         </span>
@@ -156,7 +162,7 @@ export default function AdminBookingPage() {
                             onClick={() =>
                               handleUpdateStatus(booking.id, "CONFIRMED")
                             }
-                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                            className="p-2 text-emerald-400 hover:bg-emerald-500/15 rounded-xl transition-all duration-200 hover:scale-110 active:scale-90"
                             title="Setujui Pesanan"
                           >
                             <CheckCircle className="h-5 w-5" />
@@ -166,7 +172,7 @@ export default function AdminBookingPage() {
                             onClick={() =>
                               handleUpdateStatus(booking.id, "REJECTED")
                             }
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-red-400 hover:bg-red-500/15 rounded-xl transition-all duration-200 hover:scale-110 active:scale-90"
                             title="Tolak Pesanan"
                           >
                             <XCircle className="h-5 w-5" />
@@ -181,5 +187,6 @@ export default function AdminBookingPage() {
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
 }

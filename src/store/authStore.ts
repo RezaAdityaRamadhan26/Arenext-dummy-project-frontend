@@ -1,29 +1,32 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-
-interface User {    
-    id: number;
-    email: string;
-    role: string;
-}
+import Cookies from 'js-cookie';
 
 interface AuthState {
-    user: User | null;
-    token: string | null;
-    login: (user: User, token: string) => void;
-    logout: () => void; 
+  user: any | null;
+  token: string | null;
+  login: (user: any, token: string) => void;
+  clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>()(
-    persist(
-        (set) => ({
-            user: null,
-            token: null,
-            login:(user, token) => set({user, token}),
-            logout: () =>   set({user: null, token: null}),
-        }),
-        {
-            name: 'arenext-auth'
-        }
-    )
-)
+export const useAuthStore = create<AuthState>((set) => ({
+  user: Cookies.get('user') ? JSON.parse(Cookies.get('user')!) : null,
+  token: Cookies.get('token') || null,
+
+  login: (user, token) => {
+    set({ user, token });
+
+    Cookies.set('token', token, { expires: 1, path: '/' });
+    Cookies.set('role', user.role, { expires: 1, path: '/' });
+    Cookies.set('user', JSON.stringify(user), { expires: 1, path: '/' });
+  },
+
+  clearAuth: () => {
+    set({ user: null, token: null });
+
+    Cookies.remove('token', { path: '/' });
+    Cookies.remove('role', { path: '/' });
+    Cookies.remove('user', { path: '/' });
+    
+    localStorage.removeItem('auth-storage'); 
+  },
+}));

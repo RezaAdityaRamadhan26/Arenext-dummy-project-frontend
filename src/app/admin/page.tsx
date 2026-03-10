@@ -3,17 +3,24 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/src/store/authStore";
-import { LogOut, LayoutDashboard, Map, Loader2, Trash, Edit } from "lucide-react";
+import {
+  LogOut,
+  LayoutDashboard,
+  Map,
+  Loader2,
+  Trash,
+  Edit,
+} from "lucide-react";
 import api from "@/src/lib/axios";
 import Link from "next/link";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const { user, token, logout } = useAuthStore();
+  const { user, token, clearAuth } = useAuthStore();
 
   const [isChecking, setIsChecking] = useState(true);
   const [isLoadingVenues, setIsLoadingVenues] = useState(true);
-  const [venues, setVenues] = useState([]); 
+  const [venues, setVenues] = useState([]);
 
   useEffect(() => {
     // ketika di reload, session akan tetap ada (tidak ter log out)
@@ -27,8 +34,7 @@ export default function AdminDashboard() {
             setIsChecking(false);
             return;
           }
-        } catch (e) {
-        }
+        } catch (e) {}
       }
     }
 
@@ -58,70 +64,75 @@ export default function AdminDashboard() {
   }, [token]);
 
   const handleLogout = () => {
-    logout();
+    clearAuth();
     router.push("/login");
-  }
+  };
 
-    const handleDeleteVenue = async (id: number, name: string) => {
-      const confirmDelete = window.confirm('apakah anda yakin ingin menghapus venue?')
+  const handleDeleteVenue = async (id: number, name: string) => {
+    const confirmDelete = window.confirm(
+      "apakah anda yakin ingin menghapus venue?",
+    );
 
-      if (!confirmDelete) return;
+    if (!confirmDelete) return;
 
-      try {
-        await api.delete(`/venues/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+    try {
+      await api.delete(`/venues/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        alert('lapangan berhasil dihapus')
+      alert("lapangan berhasil dihapus");
 
-        setVenues(venues.filter((v: any) => v.id !== id));
-
-      } catch (error: any) {
-        console.error("Detail Error Hapus:", error.response?.data || error);
-        const pesanError = error.response?.data?.message;
-        alert(`gagal menghapus error : ${pesanError}`)
-      }
+      setVenues(venues.filter((v: any) => v.id !== id));
+    } catch (error: any) {
+      console.error("Detail Error Hapus:", error.response?.data || error);
+      const pesanError = error.response?.data?.message;
+      alert(`gagal menghapus error : ${pesanError}`);
+    }
   };
 
   if (isChecking) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 text-gray-500">
-        <Loader2 className="h-6 w-6 animate-spin text-blue-600 mr-2" />
-        Memeriksa akses...
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-400">
+        <div className="relative">
+          <div className="h-14 w-14 rounded-full border-2 border-blue-500/20" />
+          <Loader2 className="absolute inset-0 m-auto h-8 w-8 animate-spin text-blue-400" />
+        </div>
+        <span className="ml-3">Memeriksa akses...</span>
       </div>
     );
   }
 
   // Tampilan Utama
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-white">
       {/* Navbar */}
-      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
+      <nav className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center gap-2">
-              <div className="bg-blue-600 p-2 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-blue-600 to-indigo-500 shadow-lg shadow-blue-500/25">
                 <LayoutDashboard className="h-5 w-5 text-white" />
               </div>
-              <span className="font-bold text-xl text-gray-900 tracking-tight">
-                Arenext <span className="text-blue-600">Admin</span>
+              <span className="font-bold text-xl tracking-tight">
+                Arenext{" "}
+                <span className="bg-linear-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                  Admin
+                </span>
               </span>
             </div>
 
             {/* sidebar */}
             <div className="flex items-center gap-4">
               <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-gray-900">
-                  Halo, Admin!
-                </p>
-                <p className="text-xs text-gray-500">{user?.email}</p>
+                <p className="text-sm font-medium text-white">Halo, Admin!</p>
+                <p className="text-xs text-slate-400">{user?.email}</p>
               </div>
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-300 bg-red-500/10 border border-red-400/20 hover:bg-red-500/20 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 <LogOut className="h-4 w-4" />
                 Keluar
@@ -132,16 +143,17 @@ export default function AdminDashboard() {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center sm:text-left flex flex-col sm:flex-row items-center gap-6">
-          <div className="bg-blue-50 p-4 rounded-full">
-            <Map className="h-10 w-10 text-blue-600" />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Welcome banner */}
+        <div className="rounded-3xl border border-white/10 bg-linear-to-br from-blue-600/15 via-indigo-500/10 to-violet-500/15 p-8 backdrop-blur-xl text-center sm:text-left flex flex-col sm:flex-row items-center gap-6 animate-[fadeIn_0.5s_ease-out_forwards] opacity-0">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-500 shadow-lg shadow-blue-500/25 animate-[float_3s_ease-in-out_infinite]">
+            <Map className="h-8 w-8 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-extrabold text-white">
               Ruang Kendali Arenext
             </h1>
-            <p className="mt-1 text-gray-500">
+            <p className="mt-1 text-slate-400">
               Selamat datang kembali. Di sini kamu bisa mengelola seluruh data
               lapangan dan pesanan.
             </p>
@@ -149,42 +161,48 @@ export default function AdminDashboard() {
         </div>
 
         {/* Daftar Lapangan */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-gray-900">Daftar Lapangan</h2>
-            <Link
-              href="/admin/venues/create"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              + Tambah Lapangan
-            </Link>
+        <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 animate-[fadeIn_0.6s_ease-out_0.1s_forwards] opacity-0">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <h2 className="text-lg font-bold text-white">Daftar Lapangan</h2>
+            <div className="flex gap-3">
+              <Link
+                href="/admin/bookings"
+                className="rounded-xl border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-slate-300 hover:bg-white/15 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
+              >
+                Kelola Pesanan
+              </Link>
+              <Link
+                href="/admin/venues/create"
+                className="rounded-xl bg-linear-to-r from-blue-600 to-indigo-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105 active:scale-95"
+              >
+                + Tambah Lapangan
+              </Link>
+            </div>
           </div>
 
           {isLoadingVenues ? (
-            // loading
-            <div className="flex flex-col items-center justify-center h-48 bg-gray-50 rounded-xl">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600 mb-2" />
-              <p className="text-gray-500 text-sm">
+            <div className="flex flex-col items-center justify-center h-48 rounded-2xl border border-dashed border-white/10 bg-white/5">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-400 mb-2" />
+              <p className="text-slate-400 text-sm">
                 Mengambil data lapangan...
               </p>
             </div>
           ) : venues.length === 0 ? (
-            // no venues
-            <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
-              <p className="text-gray-500 text-sm">
+            <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-white/10 rounded-2xl bg-white/5">
+              <p className="text-slate-400 text-sm">
                 Belum ada data lapangan. Silakan tambah lapangan baru.
               </p>
             </div>
           ) : (
-            // success
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {venues.map((venue: any) => (
+              {venues.map((venue: any, index: number) => (
                 <div
                   key={venue.id}
-                  className="border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col"
+                  className="group rounded-2xl border border-white/10 bg-white/5 overflow-hidden backdrop-blur-xl transition-all duration-300 hover:border-blue-400/30 hover:bg-white/10 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1 flex flex-col opacity-0 animate-[slideUp_0.4s_ease-out_forwards]"
+                  style={{ animationDelay: `${0.05 * index}s` }}
                 >
                   {/* image Lapangan */}
-                  <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden bg-gray-100">
+                  <div className="relative w-full h-48 overflow-hidden bg-slate-800">
                     <img
                       src={
                         venue.image
@@ -192,36 +210,37 @@ export default function AdminDashboard() {
                           : "https://placehold.co/600x400?text=Tanpa+Foto"
                       }
                       alt={venue.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       onError={(e: any) => {
                         e.target.src =
                           "https://placehold.co/600x400?text=Image+Error";
                       }}
                     />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent" />
                   </div>
-                  <div className="mt-4 grow flex flex-col justify-between">
+                  <div className="p-5 grow flex flex-col justify-between">
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
                         {venue.name}
                       </h3>
-                      <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                      <p className="text-sm text-slate-400 mt-1 line-clamp-2">
                         {venue.description}
                       </p>
                     </div>
 
-                    <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end gap-2">
+                    <div className="mt-4 pt-4 border-t border-white/10 flex justify-end gap-2">
                       <button
                         onClick={() =>
                           router.push(`/admin/venues/edit/${venue.id}`)
                         }
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-2.5 text-blue-400 hover:bg-blue-500/15 rounded-xl transition-all duration-300 hover:scale-110"
                         title="Edit Lapangan"
                       >
                         <Edit className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteVenue(venue.id, venue.name)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2.5 text-red-400 hover:bg-red-500/15 rounded-xl transition-all duration-300 hover:scale-110"
                         title="Hapus Lapangan"
                       >
                         <Trash className="h-4 w-4" />
