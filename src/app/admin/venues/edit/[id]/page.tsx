@@ -25,7 +25,16 @@ export default function EditVenuePage() {
 
         // isi form dengan data lama
         setName(data.name);
-        setPricePerHour(data.pricePerHour);\n        setDescription(data.description);\n      } catch (error) {\n        toast.error(\"Lapangan tidak ditemukan\", {\n          description: \"Silakan kembali ke dashboard.\",\n        });\n        router.push(\"/admin\");\n      } finally {\n        setIsLoading(false);\n      }
+        setPricePerHour(data.pricePerHour);
+        setDescription(data.description);
+      } catch (error) {
+        toast.error("Lapangan tidak ditemukan", {
+          description: "Silakan kembali ke dashboard.",
+        });
+        router.push("/admin");
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     if (token && params.id) {
