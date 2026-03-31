@@ -47,7 +47,7 @@ export default function AdminBookingPage() {
       );
 
       toast.success("Status diperbarui", {
-        description: `Pesanan berhasil diubah menjadi ${newStatus}.",
+        description: `Pesanan berhasil diubah menjadi ${newStatus}.`,
       });
       fetchBookings();
     } catch (error: any) {
