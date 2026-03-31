@@ -6,6 +6,7 @@ import { ArrowLeft, Save, Image as ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import api from "../../../../lib/axios";
 import { useAuthStore } from "@/src/store/authStore";
+import Cookies from "js-cookie";
 
 export default function CreateVenuePage() {
   const router = useRouter();
@@ -36,6 +37,16 @@ export default function CreateVenuePage() {
       return;
     }
 
+    // Pastikan ada token (dari store atau cookie)
+    const tokenCookie = Cookies.get("token");
+    if (!token && !tokenCookie) {
+      toast.error("Anda harus login sebagai admin terlebih dahulu", {
+        description: "Login untuk menambahkan lapangan.",
+      });
+      router.push("/login");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("name", name);
@@ -43,11 +54,8 @@ export default function CreateVenuePage() {
       formData.append("description", description);
       formData.append("image", image);
 
-      await api.post("/venues", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // Biarkan axios interceptor menambahkan header Authorization dari cookie
+      await api.post("/venues", formData);
 
       toast.success("Lapangan berhasil ditambahkan!", {
         description: "Lapangan baru sudah tersedia di sistem.",

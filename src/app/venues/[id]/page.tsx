@@ -59,11 +59,8 @@ export default function VenueDetailPage() {
         totalPrice: totalHarga,
       };
 
-      await api.post("/booking", dataPesanan, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // Interceptor will add Authorization header from cookie
+      await api.post("/booking", dataPesanan);
 
       toast.success("Pemesanan berhasil!", {
         description: "Lapangan berhasil dipesan. Cek pesanan Anda di halaman Pesanan Saya.",
@@ -225,9 +222,9 @@ export default function VenueDetailPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    alert(
-                      "Halo! Silakan masuk/login dulu ya untuk mulai memesan lapangan.",
-                    );
+                    toast.error("Silakan login terlebih dahulu", {
+                      description: "Masuk untuk melakukan pemesanan lapangan.",
+                    });
                     router.push("/login");
                   }}
                   className="w-full bg-white/10 border border-white/20 hover:bg-white/15 text-white px-6 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 active:scale-95 backdrop-blur-xl"
