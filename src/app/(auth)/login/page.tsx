@@ -32,18 +32,25 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginForm) => {
+const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     let response: any;
     try {
       response = await api.post("/auth/login", data);
 
-      const token = response.data.token;
-      const user = response.data.dataUser;
+      console.log("ISI KARDUS DARI BACKEND:", response.data);
+
+      const token = response.data.token || response.data.data?.token;
+      const user = response.data.user || response.data.data?.user || response.data.dataUser;
+
+      // Proteksi tambahan: Pastikan user benar-benar ada sebelum lanjut
+      if (!user) {
+        throw new Error("Data user tidak ditemukan dari backend!");
+      }
 
       login(user, token);
-      toast.success("login berhasil!", {
-        description: "selamat datang kembali di Arenext!",
+      toast.success("Login berhasil!", {
+        description: "Selamat datang kembali di Arenext!",
       });
 
       if (user.role === "ADMIN") {
@@ -52,7 +59,7 @@ export default function LoginPage() {
         router.push("/venues");
       }
     } catch (error: any) {
-      console.error("CCTV 4: TERJADI ERROR ->", error); // Ini akan membongkar masalah aslinya
+      console.error("CCTV 4: TERJADI ERROR ->", error);
 
       toast.error("Login gagal", {
         description:
@@ -64,8 +71,7 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-
-  return (
+    return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-10 sm:px-6">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-20 top-12 h-64 w-64 rounded-full bg-blue-600/30 blur-3xl" />

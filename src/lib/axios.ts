@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 api.interceptors.request.use(
@@ -18,5 +18,7 @@ api.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+console.log("URL BACKEND SAYA ADALAH:", process.env.NEXT_PUBLIC_API_URL);
 
 export default api;
