@@ -19,6 +19,4 @@ api.interceptors.request.use(
   },
 );
 
-console.log("URL BACKEND SAYA ADALAH:", process.env.NEXT_PUBLIC_API_URL);
-
 export default api;

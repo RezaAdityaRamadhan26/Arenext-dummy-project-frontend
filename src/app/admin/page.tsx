@@ -22,28 +22,20 @@ export default function AdminDashboard() {
   const [isChecking, setIsChecking] = useState(true);
   const [isLoadingVenues, setIsLoadingVenues] = useState(true);
   const [venues, setVenues] = useState([]);
-  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Tunggu Zustand hydrate dari localStorage
+  // Cek autentikasi dengan memprioritaskan cookies (middleware layer)
   useEffect(() => {
-    setIsHydrated(true);
-  }, []);
+    // Cek dari cookies dulu (paling reliable karena set di server)
+    const tokenCookie = Cookies.get('token');
+    const roleCookie = Cookies.get('role');
 
-  // Cek autentikasi dan role admin setelah hydrate
-  useEffect(() => {
-    if (!isHydrated) return;
-
-    // Ambil token dari store atau localStorage langsung
-    const storedToken = token;
-    const storedRole = Cookies.get('role');
-
-    if (!storedToken || storedRole !== 'ADMIN') {
+    if (!tokenCookie || roleCookie !== 'ADMIN') {
       router.push("/login");
       return;
     }
 
     setIsChecking(false);
-  }, [isHydrated, token, router]);
+  }, [router]);
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -52,7 +44,6 @@ export default function AdminDashboard() {
         const dataLapangan = response.data.data;
         setVenues(dataLapangan);
       } catch (error) {
-        console.error("gagal menampilkan venues");
       } finally {
         setIsLoadingVenues(false);
       }
@@ -82,13 +73,16 @@ export default function AdminDashboard() {
         },
       });
 
-      alert("lapangan berhasil dihapus");
+      toast.success("Lapangan dihapus", {
+        description: "Lapangan berhasil dihapus dari sistem.",
+      });
 
       setVenues(venues.filter((v: any) => v.id !== id));
     } catch (error: any) {
-      console.error("Detail Error Hapus:", error.response?.data || error);
       const pesanError = error.response?.data?.message;
-      alert(`gagal menghapus error : ${pesanError}`);
+      toast.error("Gagal menghapus lapangan", {
+        description: pesanError || "Silakan coba lagi.",
+      });
     }
   };
 

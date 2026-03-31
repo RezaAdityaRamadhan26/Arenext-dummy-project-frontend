@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/store/authStore";
 
@@ -24,15 +25,7 @@ export default function EditVenuePage() {
 
         // isi form dengan data lama
         setName(data.name);
-        setPricePerHour(data.pricePerHour);
-        setDescription(data.description);
-      } catch (error) {
-        console.error("Gagal mengambil data lapangan", error);
-        alert("data lapangan tidak ditemukan!");
-        router.push("/admin");
-      } finally {
-        setIsLoading(false);
-      }
+        setPricePerHour(data.pricePerHour);\n        setDescription(data.description);\n      } catch (error) {\n        toast.error(\"Lapangan tidak ditemukan\", {\n          description: \"Silakan kembali ke dashboard.\",\n        });\n        router.push(\"/admin\");\n      } finally {\n        setIsLoading(false);\n      }
     };
 
     if (token && params.id) {
@@ -58,12 +51,15 @@ export default function EditVenuePage() {
         },
       );
 
-      alert("data venue berhasil di update!");
+      toast.success("Lapangan berhasil diperbarui!", {
+        description: "Perubahan data lapangan sudah disimpan.",
+      });
       router.push("/admin");
     } catch (error: any) {
-      console.error("gagal mengupdate data venue");
-      const pesanError = error.response?.data?.error || "ada yang salah nih";
-      alert(`Gagal menyimpan perubahan: ${pesanError}`);
+      const pesanError = error.response?.data?.error || "Silakan coba lagi.";
+      toast.error("Gagal menyimpan perubahan", {
+        description: pesanError,
+      });
     }
   };
 

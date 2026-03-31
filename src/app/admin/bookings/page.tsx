@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { XCircle, CheckCircle, Clock, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/store/authStore";
 
@@ -19,7 +20,6 @@ export default function AdminBookingPage() {
       });
       setBookings(response.data.data);
     } catch (error) {
-      console.error("gagal menampilkan data");
     } finally {
       setIsLoading(false);
     }
@@ -46,11 +46,14 @@ export default function AdminBookingPage() {
         },
       );
 
-      alert(`berhasil diubah menjadi ${newStatus}`);
+      toast.success("Status diperbarui", {
+        description: `Pesanan berhasil diubah menjadi ${newStatus}.",
+      });
       fetchBookings();
     } catch (error: any) {
-      console.error("gagal update status", error);
-      alert("waduh, gagal mengubah status");
+      toast.error("Gagal memperbarui status", {
+        description: "Silakan coba lagi.",
+      });
     }
   };
 

@@ -21,7 +21,6 @@ export default function MyBookingsPage() {
         });
         setMyBookings(response.data.data);
       } catch (error: any) {
-        console.error("gagal mengambil riwayat pesanan", error);
       } finally {
         setIsLoading(false);
       }

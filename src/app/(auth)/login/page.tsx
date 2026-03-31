@@ -38,8 +38,6 @@ const onSubmit = async (data: LoginForm) => {
     try {
       response = await api.post("/auth/login", data);
 
-      console.log("ISI KARDUS DARI BACKEND:", response.data);
-
       const token = response.data.token || response.data.data?.token;
       const user = response.data.user || response.data.data?.user || response.data.dataUser;
 
@@ -59,8 +57,6 @@ const onSubmit = async (data: LoginForm) => {
         router.push("/venues");
       }
     } catch (error: any) {
-      console.error("CCTV 4: TERJADI ERROR ->", error);
-
       toast.error("Login gagal", {
         description:
           error?.response?.data?.message ||

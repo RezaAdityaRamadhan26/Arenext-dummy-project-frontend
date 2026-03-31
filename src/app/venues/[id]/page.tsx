@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import PublicNavbar from "@/src/components/layout/PublicNavbar";
 import { ArrowLeft, Loader2, Calendar, Clock, CreditCard } from "lucide-react";
+import { toast } from "sonner";
 import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/store/authStore";
-import { number } from "zod";
 
 export default function VenueDetailPage() {
   const params = useParams();
@@ -26,8 +26,9 @@ export default function VenueDetailPage() {
         const response = await api.get(`/venues/${params.id}`);
         setVenue(response.data.data);
       } catch (error) {
-        console.error("gagal mengambil data venues", error);
-        alert("data lapangan tidak ditemukan");
+        toast.error("Lapangan tidak ditemukan", {
+          description: "Silakan kembali ke daftar lapangan.",
+        });
         router.push("/venues");
       } finally {
         setIsLoading(false);
@@ -43,7 +44,9 @@ export default function VenueDetailPage() {
     e.preventDefault();
 
     if (!token) {
-      alert("kamu harus login dulu sebelum booking venue!");
+      toast.error("Harus login terlebih dahulu", {
+        description: "Silakan login untuk melakukan pemesanan.",
+      });
       router.push("/login");
       return;
     }
@@ -62,15 +65,18 @@ export default function VenueDetailPage() {
         },
       });
 
-      alert("Hore! venue berhasil dibooking");
+      toast.success("Pemesanan berhasil!", {
+        description: "Lapangan berhasil dipesan. Cek pesanan Anda di halaman Pesanan Saya.",
+      });
       router.push("/venues");
     } catch (error: any) {
-      console.error("gagal melakukan booking:", error.response?.data || error);
       const pesanError =
         error.response?.data?.message ||
         error.response?.data?.error ||
-        "cek terminal pada backend";
-      alert(`ada yang error nih : ${pesanError}`);
+        "Terjadi kesalahan, silakan coba lagi.";
+      toast.error("Pemesanan gagal", {
+        description: pesanError,
+      });
     }
   };
 

@@ -16,7 +16,6 @@ export default function PublicVenuesPage() {
         const response = await api.get("/venues");
         setVenues(response.data.data);
       } catch (error) {
-        console.error("Gagal mengambil data lapangan:", error);
       } finally {
         setIsLoading(false);
       }

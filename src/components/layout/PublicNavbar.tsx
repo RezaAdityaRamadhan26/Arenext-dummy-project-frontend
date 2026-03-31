@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { toast } from "sonner";
 
 export default function PublicNavbar() {
   const [isMounted, setIsMounted] = useState(false);
@@ -36,7 +37,9 @@ export default function PublicNavbar() {
 
   const handleLogout = () => {
     logout();
-    alert("berhasil keluar");
+    toast.success("Berhasil keluar", {
+      description: "Sampai jumpa lagi!",
+    });
     router.push("/login");
   };
 

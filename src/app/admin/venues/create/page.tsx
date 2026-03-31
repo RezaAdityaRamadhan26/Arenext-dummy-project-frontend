@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Save, Image as ImageIcon, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import api from "../../../../lib/axios";
 import { useAuthStore } from "@/src/store/authStore";
 
@@ -26,12 +27,12 @@ export default function CreateVenuePage() {
   };
 
   const handleSubmit = async (e: any) => {
-    console.log("isi token saya", token);
-
     e.preventDefault();
 
     if (!image) {
-      alert("Kamu belum memilih foto untuk venue!");
+      toast.error("Foto lapangan diperlukan", {
+        description: "Silakan pilih foto untuk lapangan.",
+      });
       return;
     }
 
@@ -48,13 +49,16 @@ export default function CreateVenuePage() {
         },
       });
 
-      alert("Hore! venue berhasil ditambahkan!");
+      toast.success("Lapangan berhasil ditambahkan!", {
+        description: "Lapangan baru sudah tersedia di sistem.",
+      });
       router.push("/admin");
     } catch (error: any) {
-      console.error("gagal menambahkan venue", error.response?.data);
       const pesanError =
-        error.response?.data?.message || "Silakan cek Console Inspect Element";
-      alert(`Gagal menyimpan! Kata Backend: ${pesanError}`);
+        error.response?.data?.message || "Silakan coba lagi.";
+      toast.error("Gagal menambahkan lapangan", {
+        description: pesanError,
+      });
     }
   };
 
