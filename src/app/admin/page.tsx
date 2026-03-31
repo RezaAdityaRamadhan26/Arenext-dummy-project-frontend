@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { useAuthStore } from "@/src/store/authStore";
 import {
   LogOut,
@@ -21,29 +22,28 @@ export default function AdminDashboard() {
   const [isChecking, setIsChecking] = useState(true);
   const [isLoadingVenues, setIsLoadingVenues] = useState(true);
   const [venues, setVenues] = useState([]);
+  const [isHydrated, setIsHydrated] = useState(false);
 
+  // Tunggu Zustand hydrate dari localStorage
   useEffect(() => {
-    // ketika di reload, session akan tetap ada (tidak ter log out)
-    if (typeof window !== "undefined") {
-      const raw = localStorage.getItem("arenext-auth");
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          const storedToken = parsed?.state?.token ?? null;
-          if (storedToken) {
-            setIsChecking(false);
-            return;
-          }
-        } catch (e) {}
-      }
+    setIsHydrated(true);
+  }, []);
+
+  // Cek autentikasi dan role admin setelah hydrate
+  useEffect(() => {
+    if (!isHydrated) return;
+
+    // Ambil token dari store atau localStorage langsung
+    const storedToken = token;
+    const storedRole = Cookies.get('role');
+
+    if (!storedToken || storedRole !== 'ADMIN') {
+      router.push("/login");
+      return;
     }
 
-    if (!token) {
-      router.push("/login");
-    } else {
-      setIsChecking(false);
-    }
-  }, [token, router]);
+    setIsChecking(false);
+  }, [isHydrated, token, router]);
 
   useEffect(() => {
     const fetchVenues = async () => {

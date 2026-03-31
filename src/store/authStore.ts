@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import Cookies from 'js-cookie';
 
 interface AuthState {
@@ -8,25 +9,33 @@ interface AuthState {
   clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: Cookies.get('user') ? JSON.parse(Cookies.get('user')!) : null,
-  token: Cookies.get('token') || null,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
 
-  login: (user, token) => {
-    set({ user, token });
+      login: (user, token) => {
+        set({ user, token });
 
-    Cookies.set('token', token, { expires: 1, path: '/' });
-    Cookies.set('role', user.role, { expires: 1, path: '/' });
-    Cookies.set('user', JSON.stringify(user), { expires: 1, path: '/' });
-  },
+        // Simpan ke cookies untuk middleware
+        Cookies.set('token', token, { expires: 7, path: '/', sameSite: 'Lax' });
+        Cookies.set('role', user.role, { expires: 7, path: '/', sameSite: 'Lax' });
+        Cookies.set('user', JSON.stringify(user), { expires: 7, path: '/', sameSite: 'Lax' });
+      },
 
-  clearAuth: () => {
-    set({ user: null, token: null });
+      clearAuth: () => {
+        set({ user: null, token: null });
 
-    Cookies.remove('token', { path: '/' });
-    Cookies.remove('role', { path: '/' });
-    Cookies.remove('user', { path: '/' });
-    
-    localStorage.removeItem('auth-storage'); 
-  },
-}));
+        // Hapus dari cookies
+        Cookies.remove('token', { path: '/' });
+        Cookies.remove('role', { path: '/' });
+        Cookies.remove('user', { path: '/' });
+      },
+    }),
+    {
+      name: 'arenext-auth',
+      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : undefined as any)),
+    }
+  )
+);

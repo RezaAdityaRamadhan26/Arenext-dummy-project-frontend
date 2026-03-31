@@ -7,19 +7,29 @@ export function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
+  // Proteksi rute admin - hanya admin yang bisa akses
   if (pathname.startsWith("/admin")) {
-    if (!token || role !== "ADMIN") {
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (role !== "ADMIN") {
       return NextResponse.redirect(new URL("/venues", request.url));
     }
   }
 
+  // Proteksi rute user - harus login
   if (pathname.startsWith("/user")) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
+  // Jika sudah login, redirect dari login/register ke venues
   if ((pathname === "/login" || pathname === "/register") && token) {
+    // Jika admin, arahkan ke admin dashboard
+    if (role === "ADMIN") {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    }
     return NextResponse.redirect(new URL("/venues", request.url));
   }
 
@@ -27,5 +37,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/user/:path*", "/login", "/register"],
+  matcher: ["/admin/:path*", "/user/:path*", "/login", "/register", "/venues/:path*"],
 };
