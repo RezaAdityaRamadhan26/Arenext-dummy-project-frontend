@@ -41,7 +41,6 @@ const onSubmit = async (data: LoginForm) => {
       const token = response.data.token || response.data.data?.token;
       const user = response.data.user || response.data.data?.user || response.data.dataUser;
 
-      // Proteksi tambahan: Pastikan user benar-benar ada sebelum lanjut
       if (!user) {
         throw new Error("Data user tidak ditemukan dari backend!");
       }

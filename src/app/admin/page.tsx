@@ -44,6 +44,9 @@ export default function AdminDashboard() {
         const response = await api.get<any>("/venues");
         const dataLapangan = response.data.data;
         setVenues(dataLapangan);
+
+        console.log("CCTV DATA BACKEND:", dataLapangan);
+        
       } catch (error) {
       } finally {
         setIsLoadingVenues(false);
@@ -201,7 +204,7 @@ export default function AdminDashboard() {
                     <img
                       src={
                         venue.image
-                          ? `${process.env.NEXT_PUBLIC_API_URL}${venue.image}`
+                          ? `${venue.image}`
                           : "https://placehold.co/600x400?text=Tanpa+Foto"
                       }
                       alt={venue.name}
