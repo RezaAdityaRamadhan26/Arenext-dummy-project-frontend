@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import PublicNavbar from "@/src/components/layout/PublicNavbar";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -21,6 +22,8 @@ export default function EditVenuePage() {
     description: "",
     pricePerHour: "",
     image: "",
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
   });
 
   useEffect(() => {
@@ -35,6 +38,7 @@ export default function EditVenuePage() {
           description: data.description || "",
           pricePerHour: data.pricePerHour || "",
           image: data.image || "",
+        setImagePreview(data.image || "");
         });
       } catch (error) {
         toast.error("Lapangan tidak ditemukan", {
@@ -59,6 +63,13 @@ export default function EditVenuePage() {
       ...prev,
       [name]: value,
     }));
+  };
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
