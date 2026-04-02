@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import PublicNavbar from "@/src/components/layout/PublicNavbar";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -22,9 +21,9 @@ export default function EditVenuePage() {
     description: "",
     pricePerHour: "",
     image: "",
+  });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
-  });
 
   useEffect(() => {
     const fetchDetailVenue = async () => {
@@ -38,8 +37,8 @@ export default function EditVenuePage() {
           description: data.description || "",
           pricePerHour: data.pricePerHour || "",
           image: data.image || "",
-        setImagePreview(data.image || "");
         });
+        setImagePreview(data.image || "");
       } catch (error) {
         toast.error("Lapangan tidak ditemukan", {
           description: "Silakan kembali ke dashboard.",
@@ -85,15 +84,28 @@ export default function EditVenuePage() {
     setIsSubmitting(true);
 
     try {
-      await api.put(
-        `/venues/${params.id}`,
-        {
+      let data: FormData | typeof formData;
+      if (imageFile) {
+        data = new FormData();
+        data.append("name", formData.name);
+        data.append("location", formData.location);
+        data.append("description", formData.description);
+        data.append("pricePerHour", formData.pricePerHour);
+        data.append("image", imageFile);
+      } else {
+        data = {
           ...formData,
           pricePerHour: Number(formData.pricePerHour),
-        },
+        };
+      }
+
+      await api.put(
+        `/venues/${params.id}`,
+        data,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            ...(imageFile ? { "Content-Type": "multipart/form-data" } : {}),
           },
         }
       );
