@@ -90,12 +90,12 @@ export default function EditVenuePage() {
         data.append("name", formData.name);
         data.append("location", formData.location);
         data.append("description", formData.description);
-        data.append("pricePerHour", formData.pricePerHour);
+        data.append("pricePerHour", String(Number(formData.pricePerHour)));
         data.append("image", imageFile);
       } else {
         data = {
           ...formData,
-          pricePerHour: Number(formData.pricePerHour),
+          pricePerHour: Number(formData.pricePerHour) as any,
         };
       }
 
