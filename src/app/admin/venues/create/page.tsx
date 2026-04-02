@@ -1,198 +1,205 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Image as ImageIcon, Loader2 } from "lucide-react";
+import PublicNavbar from "@/src/components/layout/PublicNavbar";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import api from "../../../../lib/axios";
+import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/store/authStore";
-import Cookies from "js-cookie";
 
 export default function CreateVenuePage() {
   const router = useRouter();
   const { token } = useAuthStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [name, setName] = useState("");
-  const [pricePerHour, setPricePerHour] = useState("");
-  const [description, setDescription] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    location: "",
+    description: "",
+    pricePerHour: "",
+  });
+  const [imageFile, setImageFile] = useState<File|null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [image, setImage] = useState<any>(null);
-  const [imagePreviews, setImagePreviews] = useState("");
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-  const handleImageChange = (e: any) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
-      setImage(file);
-      setImagePreviews(URL.createObjectURL(file));
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!image) {
-      toast.error("Foto lapangan diperlukan", {
-        description: "Silakan pilih foto untuk lapangan.",
+    if (!formData.name || !formData.location || !formData.pricePerHour) {
+      toast.error("Form tidak lengkap", {
+        description: "Silakan isi semua field yang diperlukan.",
       });
       return;
     }
 
-    // Pastikan ada token (dari store atau cookie)
-    const tokenCookie = Cookies.get("token");
-    if (!token && !tokenCookie) {
-      toast.error("Anda harus login sebagai admin terlebih dahulu", {
-        description: "Login untuk menambahkan lapangan.",
-      });
-      router.push("/login");
-      return;
-    }
+    setIsSubmitting(true);
 
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("pricePerHour", pricePerHour);
-      formData.append("description", description);
-      formData.append("image", image);
+      const data = new FormData();
+      data.append("name", formData.name);
+      data.append("location", formData.location);
+      data.append("description", formData.description);
+      data.append("pricePerHour", formData.pricePerHour);
+      if (imageFile) data.append("image", imageFile);
 
-      // Biarkan axios interceptor menambahkan header Authorization dari cookie
-      await api.post("/venues", formData);
-
-      toast.success("Lapangan berhasil ditambahkan!", {
-        description: "Lapangan baru sudah tersedia di sistem.",
+      await api.post("/venues", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
-      router.push("/admin");
+
+      toast.success("Lapangan berhasil dibuat!", {
+        description: "Lapangan baru berhasil ditambahkan ke sistem.",
+      });
+      router.push("/admin/venues");
     } catch (error: any) {
-      const pesanError =
-        error.response?.data?.message || "Silakan coba lagi.";
-      toast.error("Gagal menambahkan lapangan", {
-        description: pesanError,
+      toast.error("Gagal membuat lapangan", {
+        description:
+          error.response?.data?.message || "Silakan coba lagi nanti.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white py-8">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* back button */}
+    <div className="min-h-screen bg-white text-black">
+      <PublicNavbar />
+
+      <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-slate-400 hover:text-blue-400 mb-8 transition-all duration-300 font-medium group"
+          className="flex items-center gap-2 text-black hover:text-gray-600 mb-8 transition-colors font-inter font-semibold group"
         >
-          <ArrowLeft className="h-5 w-5 transition-transform duration-300 group-hover:-translate-x-1" />
-          <span>Kembali ke Dashboard</span>
+          <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+          <span>Kembali</span>
         </button>
 
-        {/* form */}
-        <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden shadow-2xl shadow-blue-500/5 animate-[fadeIn_0.5s_ease-out_forwards] opacity-0">
-          <div className="p-6 border-b border-white/10 bg-linear-to-r from-blue-600/10 to-indigo-500/10">
-            <h1 className="text-2xl font-extrabold text-white">
-              Tambah Lapangan Baru
-            </h1>
-            <p className="text-slate-400 mt-1">
-              Isi detail di bawah ini untuk menambahkan lapangan ke Arenext.
-            </p>
+        {/* Header */}
+        <div className="mb-8 animate-fadeIn">
+          <h1 className="text-4xl font-poppins font-black mb-2">
+            Tambah Lapangan Baru
+          </h1>
+          <p className="font-inter text-gray-700">
+            Isi form di bawah untuk menambahkan lapangan baru.
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="border-2 border-black p-8 rounded animate-slideUp">
+          {/* Name */}
+          <div className="mb-6">
+            <label className="font-poppins font-bold text-black block mb-2">
+              Nama Lapangan *
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Contoh: Lapangan Futsal Merdeka"
+              className="w-full border-2 border-black rounded px-4 py-3 font-inter focus:outline-none focus:ring-2 focus:ring-black/30"
+              required
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            {/* nama venue */}
-            <div>
-              <label className="block text-sm font-bold text-blue-200 mb-2">
-                Nama Venue
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Contoh: Lapangan Futsal Sintetis A"
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-500 backdrop-blur-xl transition-all duration-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 focus:bg-white/15 outline-none"
-                required
-              />
-            </div>
+          {/* Location */}
+          <div className="mb-6">
+            <label className="font-poppins font-bold text-black block mb-2">
+              Lokasi *
+            </label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="Contoh: Jl. Merdeka No. 123, Jakarta"
+              className="w-full border-2 border-black rounded px-4 py-3 font-inter focus:outline-none focus:ring-2 focus:ring-black/30"
+              required
+            />
+          </div>
 
-            {/* Input Harga */}
-            <div>
-              <label className="block text-sm font-bold text-blue-200 mb-2">
-                Harga Sewa per Jam (Rp)
-              </label>
-              <input
-                type="number"
-                value={pricePerHour}
-                onChange={(e) => setPricePerHour(e.target.value)}
-                placeholder="Contoh: 150000"
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-500 backdrop-blur-xl transition-all duration-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 focus:bg-white/15 outline-none"
-                required
-              />
-            </div>
+          {/* Price Per Hour */}
+          <div className="mb-6">
+            <label className="font-poppins font-bold text-black block mb-2">
+              Harga per Jam (Rp) *
+            </label>
+            <input
+              type="number"
+              name="pricePerHour"
+              value={formData.pricePerHour}
+              onChange={handleChange}
+              placeholder="Contoh: 150000"
+              className="w-full border-2 border-black rounded px-4 py-3 font-inter focus:outline-none focus:ring-2 focus:ring-black/30"
+              required
+            />
+          </div>
 
-            {/* Input Deskripsi */}
-            <div>
-              <label className="block text-sm font-bold text-blue-200 mb-2">
-                Deskripsi Lapangan
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Ceritakan fasilitas lapangan ini (misal: gratis bola, ada tribun, dll)"
-                rows={4}
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-500 backdrop-blur-xl transition-all duration-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 focus:bg-white/15 outline-none resize-none"
-                required
-              />
-            </div>
+          {/* Image Upload */}
+          <div className="mb-6">
+            <label className="font-poppins font-bold text-black block mb-2">
+              Gambar Lapangan
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              className="w-full border-2 border-black rounded px-4 py-3 font-inter focus:outline-none focus:ring-2 focus:ring-black/30 bg-white"
+            />
+            {imagePreview && (
+              <img src={imagePreview} alt="Preview" className="mt-4 w-full h-48 object-cover rounded border border-black" />
+            )}
+          </div>
 
-            {/* Input Upload Foto */}
-            <div>
-              <label className="block text-sm font-bold text-blue-200 mb-2">
-                Foto Lapangan
-              </label>
+          {/* Description */}
+          <div className="mb-8">
+            <label className="font-poppins font-bold text-black block mb-2">
+              Deskripsi
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Deskripsi lengkap tentang lapangan ini..."
+              rows={5}
+              className="w-full border-2 border-black rounded px-4 py-3 font-inter focus:outline-none focus:ring-2 focus:ring-black/30 resize-none"
+            />
+          </div>
 
-              <div className="mt-2 flex justify-center rounded-2xl border border-dashed border-white/20 px-6 py-10 hover:bg-white/5 hover:border-blue-400/30 transition-all duration-300">
-                <div className="text-center">
-                  {/* Tampilkan preview foto jika sudah dipilih, jika belum tampilkan ikon */}
-                  {imagePreviews ? (
-                    <img
-                      src={imagePreviews}
-                      alt="Preview"
-                      className="mx-auto h-48 w-full object-cover rounded-xl mb-4 border border-white/10"
-                    />
-                  ) : (
-                    <ImageIcon
-                      className="mx-auto h-12 w-12 text-slate-500"
-                      aria-hidden="true"
-                    />
-                  )}
-
-                  <div className="mt-4 flex text-sm leading-6 text-slate-400 justify-center">
-                    <label className="relative cursor-pointer rounded-lg font-bold text-blue-400 hover:text-blue-300 transition-colors">
-                      <span>Upload file gambar</span>
-                      <input
-                        type="file"
-                        className="sr-only"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        required
-                      />
-                    </label>
-                  </div>
-                  <p className="text-xs leading-5 text-slate-500 mt-1">
-                    PNG, JPG, JPEG up to 4MB
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Tombol Simpan */}
-            <div className="pt-4 flex justify-end">
-              <button
-                type="submit"
-                className="flex items-center gap-2 bg-linear-to-r from-blue-600 to-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/25 transition-all duration-300 hover:scale-105 hover:shadow-blue-500/40 active:scale-95"
-              >
-                <Save className="h-5 w-5" />
-                Simpan Lapangan
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-black text-white font-poppins font-bold py-4 rounded text-lg hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+          >
+            {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
+            {isSubmitting ? "Menyimpan..." : "Buat Lapangan"}
+          </button>
+        </form>
+      </main>
     </div>
   );
 }
+ 

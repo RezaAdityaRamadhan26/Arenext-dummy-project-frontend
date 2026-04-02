@@ -66,127 +66,56 @@ const onSubmit = async (data: LoginForm) => {
       setIsLoading(false);
     }
   };
-    return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-10 sm:px-6">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-20 top-12 h-64 w-64 rounded-full bg-blue-600/30 blur-3xl" />
-        <div className="absolute -right-20 top-1/3 h-72 w-72 rounded-full bg-indigo-500/30 blur-3xl" />
-        <div className="absolute bottom-2 left-1/3 h-80 w-80 rounded-full bg-violet-500/25 blur-3xl" />
-      </div>
-
-      <div className="relative w-full max-w-md space-y-7 rounded-3xl border border-white/20 bg-linear-to-br from-blue-600/25 via-indigo-500/20 to-violet-500/25 p-6 shadow-[0_20px_60px_-15px_rgba(37,99,235,0.75)] backdrop-blur-xl sm:p-10">
-        {/* Header Judul */}
-        <div className="space-y-3 text-center opacity-0 animate-[fadeIn_0.7s_ease-out_forwards]">
-          <div className="mx-auto inline-flex items-center rounded-full border border-blue-200/30 bg-blue-400/15 px-3 py-1 text-xs font-semibold tracking-wide text-blue-100 backdrop-blur-xl">
-            Welcome Back
-          </div>
-          <h2 className="text-3xl font-extrabold leading-tight text-white sm:text-4xl">
-            <span className="inline-block opacity-0 animate-[slideUp_0.55s_ease-out_0.1s_forwards]">
-              Masuk
-            </span>{" "}
-            <span className="inline-block bg-linear-to-r from-blue-200 via-indigo-100 to-violet-200 bg-clip-text opacity-0 text-transparent animate-[slideUp_0.55s_ease-out_0.2s_forwards]">
-              Arenext
-            </span>
-          </h2>
-          <p className="mx-auto max-w-sm text-sm text-blue-100/90 opacity-0 animate-[fadeIn_0.7s_ease-out_0.3s_forwards]">
-            Masuk ke akunmu untuk mulai menyewa lapangan.
-          </p>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white px-4 py-10">
+      <div className="w-full max-w-md border-2 border-black rounded-2xl bg-white p-8 md:p-12 flex flex-col gap-8 shadow-none">
+        <div className="text-center">
+          <h2 className="font-poppins font-black text-3xl mb-2">Masuk ke Arenext</h2>
+          <p className="font-inter text-gray-700 mb-6">Login untuk mulai booking lapangan favoritmu.</p>
         </div>
-
-        {/* Form Login */}
-        <form
-          className="space-y-5 opacity-0 animate-[fadeIn_0.8s_ease-out_0.25s_forwards]"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className="space-y-4">
-            {/* Input Email */}
-            <div>
-              <label className="block text-sm font-semibold text-blue-100">
-                Email
-              </label>
-              <input
-                {...register("email")}
-                type="email"
-                className="mt-1.5 block w-full rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-blue-100/60 shadow-inner backdrop-blur-xl transition duration-300 focus:border-blue-300 focus:bg-white/15 focus:outline-none focus:ring-2 focus:ring-blue-300/70"
-                placeholder="reza@arenext.com"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-rose-200">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            {/* Input Password */}
-            <div>
-              <label className="block text-sm font-semibold text-blue-100">
-                Password
-              </label>
-              <input
-                {...register("password")}
-                type="password"
-                className="mt-1.5 block w-full rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-blue-100/60 shadow-inner backdrop-blur-xl transition duration-300 focus:border-blue-300 focus:bg-white/15 focus:outline-none focus:ring-2 focus:ring-blue-300/70"
-                placeholder="*******"
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-rose-200">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <label className="block font-poppins font-bold mb-2 text-black">Email</label>
+            <input
+              type="email"
+              {...register("email")}
+              className="w-full border-2 border-black rounded px-4 py-3 font-inter text-black placeholder-gray-500 bg-transparent focus:outline-none"
+              placeholder="Email"
+              autoComplete="email"
+              required
+            />
+            {errors.email && (
+              <p className="mt-2 text-xs text-red-500 font-bold">{errors.email.message}</p>
+            )}
           </div>
-
-          {/* Tombol Submit */}
+          <div>
+            <label className="block font-poppins font-bold mb-2 text-black">Password</label>
+            <input
+              type="password"
+              {...register("password")}
+              className="w-full border-2 border-black rounded px-4 py-3 font-inter text-black placeholder-gray-500 bg-transparent focus:outline-none"
+              placeholder="Password"
+              autoComplete="current-password"
+              required
+            />
+            {errors.password && (
+              <p className="mt-2 text-xs text-red-500 font-bold">{errors.password.message}</p>
+            )}
+          </div>
           <button
             type="submit"
             disabled={isLoading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200/30 bg-linear-to-r from-blue-600 via-indigo-500 to-violet-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-900/50 transition duration-300 hover:scale-105 hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full flex items-center justify-center gap-2 bg-black text-white font-poppins font-bold py-3 px-6 rounded border-2 border-black hover:opacity-80 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <>
-                <LogIn className="h-5 w-5" />
-                Masuk Sekarang
-              </>
-            )}
+            {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+            {isLoading ? "Memproses..." : "Masuk"}
           </button>
-
-          <p className="text-center text-sm text-blue-100/90">
-            Belum punya akun?{" "}
-            <Link
-              href="/register"
-              className="inline-block font-extrabold text-white transition duration-300 hover:scale-105 hover:text-blue-200 hover:underline active:scale-95"
-            >
-              Daftar di sini
-            </Link>
-          </p>
         </form>
+        <div className="text-center mt-2">
+          <span className="font-inter text-gray-700">Belum punya akun?</span>{" "}
+          <Link href="/register" className="font-poppins font-bold text-black underline hover:no-underline ml-1">Daftar Sekarang</Link>
+        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(18px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
-}
+};

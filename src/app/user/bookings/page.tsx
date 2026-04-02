@@ -1,131 +1,233 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
-import { Clock, Loader2, MapPin, CalendarDays } from "lucide-react";
+import { useState, useEffect } from "react";
+import PublicNavbar from "@/src/components/layout/PublicNavbar";
+import { Loader2, Calendar, MapPin, X } from "lucide-react";
+import { toast } from "sonner";
 import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/store/authStore";
-import PublicNavbar from "@/src/components/layout/PublicNavbar";
 
-export default function MyBookingsPage() {
-  const [myBookings, setMyBookings] = useState([]);
+export default function UserBookingsPage() {
+  const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { token } = useAuthStore();
 
+  const fetchBookings = async () => {
+    try {
+      const response = await api.get("/bookings/my-bookings", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setBookings(response.data.data || response.data);
+    } catch (error) {
+      toast.error("Gagal memuat pesanan", {
+        description: "Silakan coba lagi nanti.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchMyBookings = async () => {
-      try {
-        const response = await api.get("/bookings/my-bookings", {
+    if (token) fetchBookings();
+  }, [token]);
+
+  const handleCancelBooking = async (id: number) => {
+    const confirmCancel = window.confirm(
+      "Yakin ingin membatalkan pesanan ini?"
+    );
+    if (!confirmCancel) return;
+
+    try {
+      await api.post(
+        `/bookings/${id}/cancel`,
+        {},
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });
-        setMyBookings(response.data.data);
-      } catch (error: any) {
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    if (token) fetchMyBookings();
-  }, [token]);
+        }
+      );
+
+      toast.success("Pesanan dibatalkan", {
+        description: "Pesanan Anda berhasil dibatalkan.",
+      });
+      fetchBookings();
+    } catch (error: any) {
+      toast.error("Gagal membatalkan pesanan", {
+        description: error.response?.data?.message || "Silakan coba lagi.",
+      });
+    }
+  };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col">
+      <div className="min-h-screen bg-white text-black">
         <PublicNavbar />
-        <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-400 mr-3" />
-          <span className="text-slate-400 font-medium">
-            Memuat riwayat pesananmu...
-          </span>
+        <div className="flex items-center justify-center h-96">
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="h-12 w-12 animate-spin" />
+            <p className="font-inter text-gray-700">Memuat pesanan Anda...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 pb-12">
+    <div className="min-h-screen bg-white text-black">
       <PublicNavbar />
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 animate-[fadeIn_0.5s_ease-out_forwards] opacity-0">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-            Riwayat Pesanan Saya
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="mb-12 animate-fadeIn">
+          <h1 className="text-4xl md:text-5xl font-poppins font-black mb-2">
+            Pesanan Saya
           </h1>
-          <p className="text-slate-400 mt-2 text-lg">
-            Pantau status penyewaan lapanganmu di sini.
+          <p className="font-inter text-gray-700 text-lg">
+            Kelola dan pantau semua pesanan lapangan Anda.
           </p>
         </div>
 
-        <div className="space-y-6">
-          {myBookings.length === 0 ? (
-            <div className="rounded-3xl p-12 text-center border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl shadow-blue-500/5 animate-[scaleIn_0.4s_ease-out_forwards] opacity-0">
-              <CalendarDays className="h-16 w-16 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">
-                Belum ada pesanan
-              </h3>
-              <p className="text-slate-400">
-                Kamu belum pernah menyewa lapangan. Yuk, cari lapangan sekarang!
+        {/* Bookings List */}
+        <div className="space-y-6 animate-slideUp">
+          {bookings.length === 0 ? (
+            <div className="border-2 border-gray-300 rounded p-12 text-center">
+              <p className="font-inter text-gray-700 text-lg mb-4">
+                Anda belum memiliki pesanan.
               </p>
+              <a
+                href="/venues"
+                className="inline-block bg-black text-white font-poppins font-bold py-3 px-8 rounded hover:opacity-80 transition-opacity"
+              >
+                Mulai Pesan Lapangan
+              </a>
             </div>
           ) : (
-            myBookings.map((booking: any, index: number) => (
+            bookings.map((booking: any, idx: number) => (
               <div
                 key={booking.id}
-                className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 flex flex-col md:flex-row gap-6 items-start md:items-center transition-all duration-300 hover:bg-white/10 hover:border-white/20 shadow-lg shadow-blue-500/5 animate-[slideUp_0.5s_ease-out_forwards] opacity-0"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="border-2 border-black rounded p-6 lg:p-8 hover:shadow-lg transition-shadow animate-slideUp"
+                style={{ animationDelay: `${0.05 * idx}s`, animationFillMode: "both" }}
               >
-                {/* Info Kiri */}
-                <div className="flex-1 space-y-3">
-                  <div className="flex items-center gap-3">
-                    <span className="bg-white/10 text-slate-300 px-3 py-1 rounded-lg text-sm font-bold border border-white/10">
-                      Order #{booking.id}
-                    </span>
-                    {/* Badge Status */}
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        booking.status === "CONFIRMED"
-                          ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                          : booking.status === "REJECTED"
-                            ? "bg-red-500/15 text-red-400 border border-red-500/30"
-                            : "bg-yellow-500/15 text-yellow-400 border border-yellow-500/30"
-                      }`}
-                    >
-                      {booking.status === "CONFIRMED"
-                        ? "Dikonfirmasi"
-                        : booking.status === "REJECTED"
-                          ? "Dibatalkan"
-                          : "Menunggu Persetujuan"}
-                    </span>
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                  {/* Left: Booking Info */}
+                  <div className="lg:col-span-3">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="font-inter text-sm text-gray-600 mb-1">
+                          Pesanan ID
+                        </p>
+                        <p className="font-poppins font-black text-2xl">
+                          #{booking.id}
+                        </p>
+                      </div>
+                      <span
+                        className={`px-4 py-2 rounded font-poppins font-bold text-sm border-2 ${
+                          booking.status === "CONFIRMED"
+                            ? "bg-green-50 border-green-600 text-green-600"
+                            : booking.status === "REJECTED"
+                              ? "bg-red-50 border-red-600 text-red-600"
+                              : "bg-yellow-50 border-yellow-600 text-yellow-600"
+                        }`}
+                      >
+                        {booking.status || "PENDING"}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                      {/* Venue */}
+                      <div>
+                        <p className="font-inter text-sm text-gray-600 mb-2">
+                          Lapangan
+                        </p>
+                        <p className="font-poppins font-bold text-lg">
+                          {booking.venue?.name || "Venue Dihapus"}
+                        </p>
+                        {booking.venue?.location && (
+                          <div className="flex items-center gap-2 text-gray-600 text-sm mt-1">
+                            <MapPin className="w-4 h-4" />
+                            {booking.venue.location}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Date & Time */}
+                      <div>
+                        <p className="font-inter text-sm text-gray-600 mb-2">
+                          Tanggal & Waktu
+                        </p>
+                        <div className="flex items-center gap-2 font-poppins font-bold">
+                          <Calendar className="w-5 h-5" />
+                          <span>
+                            {new Date(booking.date).toLocaleDateString(
+                              "id-ID"
+                            )}
+                          </span>
+                        </div>
+                        {booking.startTime && (
+                          <p className="text-sm text-gray-600 mt-1">
+                            Mulai pukul {booking.startTime}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Duration & Price */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="border-2 border-gray-200 rounded p-4">
+                        <p className="font-inter text-sm text-gray-600">
+                          Durasi
+                        </p>
+                        <p className="font-poppins font-bold text-xl">
+                          {booking.hours} jam
+                        </p>
+                      </div>
+                      <div className="border-2 border-gray-200 rounded p-4">
+                        <p className="font-inter text-sm text-gray-600">
+                          Harga per jam
+                        </p>
+                        <p className="font-poppins font-bold text-xl">
+                          Rp {booking.venue?.pricePerHour.toLocaleString("id-ID") || "-"}
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <h2 className="text-lg sm:text-2xl font-bold text-white">
-                    {booking.venue ? booking.venue.name : "Lapangan Dihapus"}
-                  </h2>
+                  {/* Right: Actions & Total */}
+                  <div className="lg:col-span-2 flex flex-col justify-between">
+                    {/* Total Price */}
+                    <div>
+                      <p className="font-inter text-sm text-gray-600 mb-2">
+                        Total Tagihan
+                      </p>
+                      <p className="font-poppins font-black text-3xl text-black">
+                        Rp {booking.totalPrice.toLocaleString("id-ID")}
+                      </p>
+                    </div>
 
-                  <div className="flex flex-col sm:flex-row gap-4 text-slate-400 text-sm font-medium">
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="h-4 w-4 text-blue-400" />
-                      {new Date(booking.date).toLocaleDateString("id-ID", {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                    {/* Booking Date */}
+                    <div className="text-sm font-inter text-gray-600">
+                      <p>
+                        Dipesan pada:{" "}
+                        {new Date(booking.createdAt).toLocaleDateString(
+                          "id-ID"
+                        )}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-4 w-4 text-indigo-400" />
-                      Durasi: {booking.hours} Jam
-                    </div>
+
+                    {/* Actions */}
+                    {booking.status === "PENDING" && (
+                      <button
+                        onClick={() => handleCancelBooking(booking.id)}
+                        className="w-full mt-4 border-2 border-red-600 text-red-600 font-poppins font-bold py-3 rounded hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <X className="w-5 h-5" />
+                        Batalkan Pesanan
+                      </button>
+                    )}
                   </div>
-                </div>
-
-                {/* Info Kanan (Harga) */}
-                <div className="md:text-right border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6 w-full md:w-auto">
-                  <p className="text-sm text-slate-500 font-medium mb-1">
-                    Total Pembayaran
-                  </p>
-                  <p className="text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-indigo-400">
-                    Rp {booking.totalPrice.toLocaleString("id-ID")}
-                  </p>
                 </div>
               </div>
             ))
@@ -135,3 +237,4 @@ export default function MyBookingsPage() {
     </div>
   );
 }
+ 

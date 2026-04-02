@@ -21,15 +21,17 @@ export default function PublicNavbar() {
 
   if (!isMounted) {
     return (
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-2xl">
+      <header className="sticky top-0 z-50 border-b-2 border-black bg-white">
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link
             href="/venues"
-            className="text-2xl font-extrabold tracking-tight bg-linear-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent"
+            className="text-2xl font-poppins font-black text-black"
           >
-            Arenext
+            ARENEXT
           </Link>
-          <div className="text-sm font-medium text-slate-500">Memuat...</div>
+          <div className="text-sm font-inter font-medium text-gray-600">
+            Memuat...
+          </div>
         </div>
       </header>
     );
@@ -44,135 +46,136 @@ export default function PublicNavbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-2xl">
+    <header className="sticky top-0 z-50 border-b-2 border-black bg-white">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Logo */}
         <Link
-          href="/venues"
-          className="text-2xl font-extrabold tracking-tight bg-linear-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent transition duration-300 hover:from-blue-300 hover:to-violet-400"
+          href="/"
+          className="text-2xl font-poppins font-black text-black hover:opacity-70 transition-opacity"
         >
-          Arenext
+          ARENEXT
         </Link>
 
-        {/* Mobile toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="sm:hidden p-2 text-slate-400 hover:text-white transition-colors rounded-lg"
-        >
-          {mobileOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
-        </button>
-
-        {/* Desktop nav */}
-        <nav className="hidden sm:flex items-center gap-1 text-sm font-medium">
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-8">
           <Link
             href="/venues"
-            className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all duration-300"
+            className="font-inter font-semibold text-black hover:text-gray-600 transition-colors border-b-2 border-transparent hover:border-black pb-1"
           >
-            Daftar Lapangan
+            Lapangan
           </Link>
 
           {token ? (
-            <div className="flex items-center gap-1 ml-2 pl-3 border-l border-white/10">
-              {user?.role === "ADMIN" ? (
+            <>
+              {user?.role === "admin" && (
                 <Link
-                  href="/admin"
-                  className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all duration-300 font-semibold"
+                  href="/admin/bookings"
+                  className="font-inter font-semibold text-black hover:text-gray-600 transition-colors border-b-2 border-transparent hover:border-black pb-1"
                 >
-                  Dasbor Admin
-                </Link>
-              ) : (
-                <Link
-                  href="/user/bookings"
-                  className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all duration-300 font-semibold"
-                >
-                  Pesanan Saya
+                  Admin
                 </Link>
               )}
+              <Link
+                href="/user/bookings"
+                className="font-inter font-semibold text-black hover:text-gray-600 transition-colors border-b-2 border-transparent hover:border-black pb-1"
+              >
+                Pesanan Saya
+              </Link>
               <button
                 onClick={handleLogout}
-                className="ml-1 rounded-xl bg-red-500/15 border border-red-400/20 text-red-300 font-bold px-4 py-2 hover:bg-red-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
+                className="font-inter font-semibold px-6 py-2 border-2 border-black text-black hover:bg-black hover:text-white transition-all"
               >
-                Keluar
+                Logout
               </button>
-            </div>
+            </>
           ) : (
-            <div className="flex items-center gap-2 ml-2 pl-3 border-l border-white/10">
+            <>
               <Link
                 href="/login"
-                className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all duration-300 font-semibold"
+                className="font-inter font-semibold text-black hover:text-gray-600 transition-colors border-b-2 border-transparent hover:border-black pb-1"
               >
-                Masuk
+                Login
               </Link>
               <Link
                 href="/register"
-                className="rounded-xl bg-linear-to-r from-blue-600 to-indigo-500 px-5 py-2 text-white font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105 active:scale-95"
+                className="font-inter font-semibold px-6 py-2 bg-black text-white hover:opacity-80 transition-opacity"
               >
                 Daftar
               </Link>
-            </div>
+            </>
           )}
         </nav>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="md:hidden p-2 hover:bg-gray-100 rounded"
+        >
+          {mobileOpen ? (
+            <X className="w-6 h-6 text-black" />
+          ) : (
+            <Menu className="w-6 h-6 text-black" />
+          )}
+        </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="sm:hidden border-t border-white/10 bg-slate-950/95 backdrop-blur-2xl px-4 pb-4 pt-2 animate-[fadeIn_0.2s_ease-out_forwards] space-y-1">
-          <Link
-            href="/venues"
-            onClick={() => setMobileOpen(false)}
-            className="block px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all font-medium"
-          >
-            Daftar Lapangan
-          </Link>
-          {token ? (
-            <>
-              {user?.role === "ADMIN" ? (
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileOpen(false)}
-                  className="block px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all font-medium"
-                >
-                  Dasbor Admin
-                </Link>
-              ) : (
+        <div className="md:hidden border-t-2 border-black bg-white animate-slideDown">
+          <nav className="flex flex-col gap-0 p-4">
+            <Link
+              href="/venues"
+              className="font-inter font-semibold py-3 px-4 text-black hover:bg-gray-100 border-b border-gray-200"
+            >
+              Lapangan
+            </Link>
+
+            {token ? (
+              <>
+                {user?.role === "admin" && (
+                  <Link
+                    href="/admin/bookings"
+                    className="font-inter font-semibold py-3 px-4 text-black hover:bg-gray-100 border-b border-gray-200"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <Link
                   href="/user/bookings"
-                  onClick={() => setMobileOpen(false)}
-                  className="block px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all font-medium"
+                  className="font-inter font-semibold py-3 px-4 text-black hover:bg-gray-100 border-b border-gray-200"
                 >
                   Pesanan Saya
                 </Link>
-              )}
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-3 py-2.5 rounded-lg text-red-300 hover:bg-red-500/15 transition-all font-bold"
-              >
-                Keluar
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all font-medium"
-              >
-                Masuk
-              </Link>
-              <Link
-                href="/register"
-                onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2.5 rounded-xl bg-linear-to-r from-blue-600 to-indigo-500 text-center text-white font-bold shadow-lg shadow-blue-500/25 transition-all"
-              >
-                Daftar Sekarang
-              </Link>
-            </>
-          )}
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMobileOpen(false);
+                  }}
+                  className="font-inter font-semibold py-3 px-4 text-black hover:bg-gray-100 text-left"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="font-inter font-semibold py-3 px-4 text-black hover:bg-gray-100 border-b border-gray-200"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="font-inter font-semibold py-3 px-4 bg-black text-white hover:opacity-80"
+                >
+                  Daftar
+                </Link>
+              </>
+            )}
+          </nav>
         </div>
       )}
     </header>
   );
 }
+ 

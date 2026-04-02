@@ -1,123 +1,121 @@
 import PublicNavbar from "../components/layout/PublicNavbar";
-import { ArrowRight, Trophy, Clock, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-white text-black">
       <PublicNavbar />
-
       <main>
-        {/* ── Hero Section ── */}
-        <div className="relative overflow-hidden">
-          {/* Ambient glow blobs */}
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
-            <div className="absolute right-0 top-1/4 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl" />
-            <div className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-violet-500/15 blur-3xl" />
-          </div>
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28 text-center lg:pt-36 lg:pb-40">
-            <div className="animate-[fadeIn_0.6s_ease-out_forwards] opacity-0">
-              <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-500/10 px-4 py-1.5 text-sm font-semibold text-blue-200 backdrop-blur-xl">
-                <Sparkles className="h-4 w-4" />
-                Platform Booking #1 di Indonesia
-              </div>
-            </div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
-              <span className="inline-block opacity-0 animate-[slideUp_0.6s_ease-out_0.1s_forwards]">
-                Sewa Lapangan
-              </span>
-              <br className="hidden md:block" />
-              <span className="inline-block opacity-0 animate-[slideUp_0.6s_ease-out_0.2s_forwards] bg-linear-to-r from-blue-400 via-indigo-300 to-violet-400 bg-clip-text text-transparent">
-                Lebih Mudah & Cepat
-              </span>
+        {/* Hero Section */}
+        <section className="w-full border-b-2 border-black pb-16 pt-12 md:pt-24 bg-white">
+          <div className="max-w-3xl mx-auto px-4 flex flex-col items-center text-center">
+            <h1 className="font-poppins font-black text-5xl md:text-7xl mb-6 leading-tight tracking-tight">
+              Sewa Lapangan
+              <span className="block mt-2">Jadi Lebih Mudah</span>
             </h1>
-
-            <p className="max-w-2xl mx-auto text-lg md:text-xl text-slate-400 mb-10 opacity-0 animate-[fadeIn_0.7s_ease-out_0.35s_forwards]">
-              Arenext membantu kamu menemukan dan memesan lapangan olahraga
-              terbaik di sekitarmu hanya dengan beberapa klik. Tanpa ribet,
-              tanpa antre.
+            <p className="font-inter text-lg md:text-xl text-gray-700 mb-10 max-w-xl">
+              Platform booking lapangan olahraga paling sederhana. Temukan dan pesan lapangan impian Anda hanya dalam beberapa klik.
             </p>
-
-            <div className="flex justify-center gap-4 opacity-0 animate-[fadeIn_0.7s_ease-out_0.5s_forwards] px-4 sm:px-0">
+            <div className="w-full flex flex-col sm:flex-row gap-3 max-w-xl mb-8">
+              <input
+                type="text"
+                placeholder="Cari nama atau lokasi lapangan"
+                className="flex-1 border-2 border-black rounded px-4 py-4 font-inter text-black placeholder-gray-500 bg-transparent focus:outline-none"
+              />
               <Link
                 href="/venues"
-                className="group flex items-center justify-center gap-2 bg-linear-to-r from-blue-600 to-indigo-500 text-white w-full sm:w-auto px-8 py-4 rounded-2xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105 active:scale-95"
+                className="bg-black text-white font-poppins font-bold py-4 px-8 rounded border-2 border-black hover:opacity-80 transition-opacity text-center"
               >
-                Lihat Lapangan
-                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                Cari Lapangan
               </Link>
             </div>
+            <Link
+              href="/venues"
+              className="inline-block bg-black text-white font-poppins font-bold py-4 px-10 rounded border-2 border-black text-lg hover:opacity-80 transition-opacity"
+            >
+              Lihat Semua Lapangan →
+            </Link>
           </div>
-        </div>
+        </section>
 
-        {/* ── Features Section ── */}
-        <div className="relative border-t border-white/5 bg-slate-950">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-            <div className="text-center mb-14 opacity-0 animate-[fadeIn_0.7s_ease-out_0.1s_forwards]">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
-                Kenapa Harus Arenext?
-              </h2>
-              <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                Kami bangun pengalaman booking yang kamu nikmati.
-              </p>
+        {/* Features Section */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="border-2 border-black rounded p-8 flex flex-col items-center text-center bg-white">
+              <div className="w-12 h-12 mb-4 border-2 border-black rounded-full flex items-center justify-center font-poppins font-black text-2xl">⚡</div>
+              <h3 className="font-poppins font-bold text-xl mb-2">Mudah & Cepat</h3>
+              <p className="font-inter text-gray-700">Booking simpel hanya dalam beberapa klik saja.</p>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-              {/* Card 1 */}
-              <div className="group rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/30 hover:bg-white/10 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1 opacity-0 animate-[slideUp_0.6s_ease-out_0.15s_forwards]">
-                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-500 shadow-lg shadow-blue-500/25 transition-transform duration-300 group-hover:scale-110">
-                  <Trophy className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2 text-center">
-                  Fasilitas Terbaik
-                </h3>
-                <p className="text-slate-400 text-center text-sm leading-relaxed">
-                  Pilihan lapangan dengan standar kualitas tinggi untuk
-                  kenyamananmu bermain.
-                </p>
-              </div>
-
-              {/* Card 2 */}
-              <div className="group rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition-all duration-300 hover:border-indigo-400/30 hover:bg-white/10 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 opacity-0 animate-[slideUp_0.6s_ease-out_0.25s_forwards]">
-                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-600 to-violet-500 shadow-lg shadow-indigo-500/25 transition-transform duration-300 group-hover:scale-110">
-                  <Clock className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2 text-center">
-                  Pesan Kapan Saja
-                </h3>
-                <p className="text-slate-400 text-center text-sm leading-relaxed">
-                  Sistem booking online 24/7. Atur jadwal mainmu tanpa terikat
-                  waktu operasional.
-                </p>
-              </div>
-
-              {/* Card 3 */}
-              <div className="group rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition-all duration-300 hover:border-violet-400/30 hover:bg-white/10 hover:shadow-xl hover:shadow-violet-500/10 hover:-translate-y-1 opacity-0 animate-[slideUp_0.6s_ease-out_0.35s_forwards]">
-                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-violet-600 to-fuchsia-500 shadow-lg shadow-violet-500/25 transition-transform duration-300 group-hover:scale-110">
-                  <ShieldCheck className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2 text-center">
-                  Transaksi Aman
-                </h3>
-                <p className="text-slate-400 text-center text-sm leading-relaxed">
-                  Pembayaran terjamin aman dan data pemesananmu tersimpan dengan
-                  baik.
-                </p>
-              </div>
+            <div className="border-2 border-black rounded p-8 flex flex-col items-center text-center bg-white">
+              <div className="w-12 h-12 mb-4 border-2 border-black rounded-full flex items-center justify-center font-poppins font-black text-2xl">📍</div>
+              <h3 className="font-poppins font-bold text-xl mb-2">Bermacam Lokasi</h3>
+              <p className="font-inter text-gray-700">Lapangan tersedia di berbagai lokasi strategis di kota Anda.</p>
+            </div>
+            <div className="border-2 border-black rounded p-8 flex flex-col items-center text-center bg-white">
+              <div className="w-12 h-12 mb-4 border-2 border-black rounded-full flex items-center justify-center font-poppins font-black text-2xl">👥</div>
+              <h3 className="font-poppins font-bold text-xl mb-2">Komunitas Seru</h3>
+              <p className="font-inter text-gray-700">Bergabung dengan ribuan pemain yang mempercayai Arenext.</p>
+            </div>
+            <div className="border-2 border-black rounded p-8 flex flex-col items-center text-center bg-white">
+              <div className="w-12 h-12 mb-4 border-2 border-black rounded-full flex items-center justify-center font-poppins font-black text-2xl">✔️</div>
+              <h3 className="font-poppins font-bold text-xl mb-2">Transparan</h3>
+              <p className="font-inter text-gray-700">Harga jelas tanpa biaya tersembunyi. Apa yang kamu lihat itu harganya.</p>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* ── Footer mini ── */}
-        <footer className="border-t border-white/5 bg-slate-950 py-8 text-center">
-          <p className="text-sm text-slate-500">
-            &copy; 2026 Arenext. Built with passion for sports.
-          </p>
-        </footer>
+        {/* CTA Section */}
+        <section className="w-full border-t-2 border-black bg-white py-16">
+          <div className="max-w-3xl mx-auto px-4 flex flex-col items-center text-center">
+            <h2 className="text-3xl md:text-4xl font-poppins font-black mb-4">Mulai Pesan Lapangan Sekarang</h2>
+            <p className="font-inter text-lg text-gray-700 mb-8 max-w-xl">
+              Temukan lapangan terbaik dan pesan sesuai jadwal Anda.
+            </p>
+            <Link
+              href="/venues"
+              className="inline-block bg-black text-white font-poppins font-bold py-4 px-10 rounded border-2 border-black text-lg hover:opacity-90 transition-opacity"
+            >
+              Jelajahi Lapangan
+            </Link>
+          </div>
+        </section>
       </main>
+      <footer className="border-t-2 border-black bg-white py-12 mt-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="text-left">
+            <h3 className="text-2xl font-poppins font-black mb-2">ARENEXT</h3>
+            <p className="font-inter text-gray-700">Platform booking lapangan olahraga paling mudah di Indonesia.</p>
+          </div>
+          <div className="flex flex-col md:flex-row gap-8">
+            <div>
+              <h4 className="font-poppins font-bold mb-2">Menu</h4>
+              <ul className="space-y-2 font-inter text-gray-700">
+                <li>
+                  <Link href="/venues" className="hover:text-black">Lapangan</Link>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-black">Tentang Kami</a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-poppins font-bold mb-2">Bantuan</h4>
+              <ul className="space-y-2 font-inter text-gray-700">
+                <li>
+                  <a href="#" className="hover:text-black">Hubungi Kami</a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-black">Kebijakan</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="border-t-2 border-gray-300 pt-8 text-center mt-8">
+          <p className="font-inter text-gray-600">© 2026 Arenext. Semua hak dilindungi.</p>
+        </div>
+      </footer>
     </div>
   );
 }
+
