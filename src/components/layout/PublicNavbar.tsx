@@ -67,7 +67,7 @@ export default function PublicNavbar() {
 
           {token ? (
             <>
-              {user?.role === "admin" && (
+              {user?.role?.toUpperCase() === "ADMIN" && (
                 <Link
                   href="/admin/bookings"
                   className="font-inter font-semibold text-black hover:text-gray-600 transition-colors border-b-2 border-transparent hover:border-black pb-1"
@@ -75,12 +75,14 @@ export default function PublicNavbar() {
                   Admin
                 </Link>
               )}
-              <Link
-                href="/user/bookings"
-                className="font-inter font-semibold text-black hover:text-gray-600 transition-colors border-b-2 border-transparent hover:border-black pb-1"
-              >
-                Pesanan Saya
-              </Link>
+              {user?.role?.toUpperCase() !== "ADMIN" && (
+                <Link
+                  href="/user/bookings"
+                  className="font-inter font-semibold text-black hover:text-gray-600 transition-colors border-b-2 border-transparent hover:border-black pb-1"
+                >
+                  Pesanan Saya
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
                 className="font-inter font-semibold px-6 py-2 border-2 border-black text-black hover:bg-black hover:text-white transition-all"
@@ -132,7 +134,7 @@ export default function PublicNavbar() {
 
             {token ? (
               <>
-                {user?.role === "admin" && (
+                {user?.role?.toUpperCase() === "ADMIN" && (
                   <Link
                     href="/admin/bookings"
                     className="font-inter font-semibold py-3 px-4 text-black hover:bg-gray-100 border-b border-gray-200"
@@ -140,12 +142,14 @@ export default function PublicNavbar() {
                     Admin
                   </Link>
                 )}
-                <Link
-                  href="/user/bookings"
-                  className="font-inter font-semibold py-3 px-4 text-black hover:bg-gray-100 border-b border-gray-200"
-                >
-                  Pesanan Saya
-                </Link>
+                {user?.role?.toUpperCase() !== "ADMIN" && (
+                  <Link
+                    href="/user/bookings"
+                    className="font-inter font-semibold py-3 px-4 text-black hover:bg-gray-100 border-b border-gray-200"
+                  >
+                    Pesanan Saya
+                  </Link>
+                )}
                 <button
                   onClick={() => {
                     handleLogout();
