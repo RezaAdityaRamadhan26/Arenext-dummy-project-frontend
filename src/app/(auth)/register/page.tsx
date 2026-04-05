@@ -35,8 +35,8 @@ export default function RegisterPage() {
     try {
       await api.post("/auth/register", data);
 
-      toast.success("Akun berhasil dibuat!", {
-        description: "Silakan masuk menggunakan akun barumu.",
+      toast.success("Registrasi Berhasil! 📧", {
+        description: "Silakan cek inbox email kamu (termasuk folder spam) untuk mengklik link verifikasi sebelum login ya!",
       });
 
       router.push("/login");

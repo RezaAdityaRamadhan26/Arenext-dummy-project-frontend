@@ -56,12 +56,17 @@ const onSubmit = async (data: LoginForm) => {
         router.push("/venues");
       }
     } catch (error: any) {
-      toast.error("Login gagal", {
-        description:
-          error?.response?.data?.message ||
-          error.message ||
-          "Pastikan email dan password benar",
-      });
+      const errorMessage = error?.response?.data?.message || error.message;
+
+      if (error?.response?.status === 403) {
+        toast.error("Email Belum Diverifikasi! 📩", {
+          description: "Silakan cek inbox (atau spam) Gmail kamu dan klik link verifikasi untuk mengaktifkan akunmu.",
+        });
+      } else {
+        toast.error("Login gagal", {
+          description: errorMessage || "Pastikan email dan password benar ya!",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
