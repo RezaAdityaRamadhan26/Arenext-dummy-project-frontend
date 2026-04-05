@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import PublicNavbar from "@/src/components/layout/PublicNavbar";
-import { CheckCircle, XCircle, Clock, Loader2, Filter } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Loader2, Filter, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { toast } from "sonner";
 import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/store/authStore";
@@ -84,13 +85,21 @@ export default function AdminBookingPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
-        <div className="mb-12 animate-fadeIn">
-          <h1 className="text-4xl md:text-5xl font-poppins font-black mb-2">
-            Manajemen Pesanan
-          </h1>
-          <p className="font-inter text-gray-700 text-lg">
-            Kelola semua pesanan lapangan yang masuk dari pelanggan Anda.
-          </p>
+        <div className="mb-12 animate-fadeIn flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-poppins font-black mb-2">
+              Manajemen Pesanan
+            </h1>
+            <p className="font-inter text-gray-700 text-lg">
+              Kelola semua pesanan lapangan yang masuk dari pelanggan Anda.
+            </p>
+          </div>
+          <Link
+            href="/admin"
+            className="px-6 py-2 border-2 border-black rounded font-poppins font-bold hover:bg-black hover:text-white transition-all flex items-center gap-2"
+          >
+            Kembali ke Dashboard
+          </Link>
         </div>
 
         {/* Filter Chips */}
@@ -127,6 +136,9 @@ export default function AdminBookingPage() {
                   </th>
                   <th className="px-6 py-4 text-left font-poppins font-bold">
                     Tanggal
+                  </th>
+                  <th className="px-6 py-4 text-left font-poppins font-bold">
+                    Jam Main
                   </th>
                   <th className="px-6 py-4 text-left font-poppins font-bold">
                     Total
@@ -174,10 +186,15 @@ export default function AdminBookingPage() {
                         </p>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-inter">
+                        <div className="font-inter text-sm">
                           <p className="font-bold">
                             {new Date(booking.date).toLocaleDateString("id-ID")}
                           </p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-inter">
+                          <p className="font-bold">{booking.startTime || "-"}</p>
                           <p className="text-sm text-gray-600">
                             {booking.hours} jam
                           </p>
@@ -286,9 +303,9 @@ export default function AdminBookingPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="font-inter text-sm text-gray-600">Durasi</p>
+                      <p className="font-inter text-sm text-gray-600">Jam Main</p>
                       <p className="font-poppins font-bold text-sm">
-                        {booking.hours} jam
+                        {booking.startTime} ({booking.hours} jam)
                       </p>
                     </div>
                   </div>

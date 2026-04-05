@@ -11,6 +11,7 @@ import {
   Loader2,
   Trash,
   Edit,
+  ClipboardList,
 } from "lucide-react";
 import api from "@/src/lib/axios";
 import Link from "next/link";
@@ -128,12 +129,21 @@ export default function AdminDashboard() {
         <div className="max-w-5xl mx-auto mt-12">
           <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <h2 className="font-poppins font-bold text-2xl">Daftar Lapangan</h2>
-            <Link
-              href="/admin/venues/create"
-              className="font-inter font-semibold px-6 py-2 bg-black text-white rounded border-2 border-black hover:opacity-80 transition"
-            >
-              + Tambah Lapangan
-            </Link>
+            <div className="flex flex-wrap gap-2 sm:gap-4">
+              <Link
+                href="/admin/bookings"
+                className="font-inter font-semibold px-6 py-2 border-2 border-black rounded hover:bg-black hover:text-white transition flex items-center gap-2"
+              >
+                <ClipboardList className="h-4 w-4" />
+                Kelola Pesanan
+              </Link>
+              <Link
+                href="/admin/venues/create"
+                className="font-inter font-semibold px-6 py-2 bg-black text-white rounded border-2 border-black hover:opacity-80 transition"
+              >
+                + Tambah Lapangan
+              </Link>
+            </div>
           </div>
 
           {isLoadingVenues ? (
